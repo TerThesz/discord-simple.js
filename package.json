@@ -8,8 +8,7 @@
     "test": "nodemon --exec ts-node test/index.ts",
     "merge": "git checkout staging && git pull origin dev && git push && git checkout dev",
     "publish_package": "yarn build && npm publish",
-    "build": "tsc",
-    "postversion": "git push && yarn merge"
+    "build": "tsc"
   },
   "repository": {
     "type": "git",
