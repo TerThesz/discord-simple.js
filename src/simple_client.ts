@@ -4,6 +4,7 @@ import fs from "fs";
 import command_handler from "./handlers/command_handler";
 import interaction_handler from "./handlers/interaction_handler";
 import event_handler from "./handlers/event_handler";
+import { resolve } from "path";
 
 export default class SimpleClient extends Client {
   public commands_folder: string;
@@ -22,9 +23,12 @@ export default class SimpleClient extends Client {
     if (!token) throw new Error(`❌ No token provided!`);
     if (!client_id) throw new Error(`❌ No client id provided!`);
 
-    this.commands_folder =
-      __dirname + "../../../" + (options?.commands_folder || "commands");
-    this.events_folder = __dirname + "../../../" + (options?.events_folder || "events");
+    this.commands_folder = resolve(
+      __dirname + "../../../" + (options?.commands_folder || "commands")
+    );
+    this.events_folder = resolve(
+      __dirname + "../../../" + (options?.events_folder || "events")
+    );
 
     this.token = token;
     this.client_id = client_id;
