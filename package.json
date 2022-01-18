@@ -7,7 +7,7 @@
   "scripts": {
     "test": "nodemon --exec ts-node test/index.ts",
     "merge": "git checkout staging && git pull origin dev && git push && git checkout dev",
-    "publish": "yarn build && npm publish",
+    "publish_package": "yarn build && npm publish",
     "build": "tsc",
     "postversion": "git push && yarn merge"
   },
