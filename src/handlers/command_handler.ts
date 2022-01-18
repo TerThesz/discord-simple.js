@@ -4,6 +4,7 @@ import { Routes } from "discord-api-types/v9";
 import { Collection } from "discord.js";
 import fs from "fs";
 import SimpleClient from "simple_client";
+import { CommandType } from "types";
 
 export default (client: SimpleClient) => {
   client.commands = new Collection();
@@ -24,31 +25,16 @@ export default (client: SimpleClient) => {
       .setName(command.name)
       .setDescription(command.description);
 
-    if (command.options) {
-      for (const option of command.options) {
-        command.slash_command[
-          "add" +
-            option.type
-              .split("")
-              .map((char: string, index: number) => {
-                if (index === 0) return char.toUpperCase();
-                return char;
-              })
-              .join("") +
-            "Option"
-        ]((option_thingy: any) => {
-          option_thingy
-            .setName(option.name)
-            .setDescription(option.description)
-            .setRequired(option.required || false);
+    handle_options(command);
 
-          if (option.choices) {
-            for (const choice of option.choices) {
-              option_thingy.addChoice(choice.name, choice.value);
-            }
-          }
+    if (command.subcommands) {
+      for (const subcommand of command.subcommands) {
+        command.addSubcommand((sub_command_object: any) => {
+          sub_command_object
+            .setName(subcommand.name)
+            .setDescription(subcommand.description);
 
-          return option_thingy;
+          handle_options(subcommand);
         });
       }
     }
@@ -74,3 +60,34 @@ export default (client: SimpleClient) => {
     .then(() => console.log("✔️ Successfully registered application commands."))
     .catch(console.error);
 };
+
+function handle_options(command: any) {
+  if (command.options) {
+    for (const option of command.options) {
+      command.slash_command[
+        "add" +
+          option.type
+            .split("")
+            .map((char: string, index: number) => {
+              if (index === 0) return char.toUpperCase();
+              return char;
+            })
+            .join("") +
+          "Option"
+      ]((option_thingy: any) => {
+        option_thingy
+          .setName(option.name)
+          .setDescription(option.description)
+          .setRequired(option.required || false);
+
+        if (option.choices) {
+          for (const choice of option.choices) {
+            option_thingy.addChoice(choice.name, choice.value);
+          }
+        }
+
+        return option_thingy;
+      });
+    }
+  }
+}
