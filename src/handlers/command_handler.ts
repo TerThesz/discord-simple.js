@@ -29,17 +29,21 @@ export default (client: SimpleClient) => {
 
     if (command.subcommands) {
       for (const subcommand of command.subcommands) {
-        command.addSubcommand((sub_command_object: any) => {
+        command.slash_command.addSubcommand((sub_command_object: any) => {
           sub_command_object
             .setName(subcommand.name)
             .setDescription(subcommand.description);
 
           handle_options(subcommand);
         });
+
+        console.log(
+          `    -> Loaded subcommand ${command.name}/${subcommand.name}`
+        );
       }
     }
 
-    console.log(`  👍️ Registering command: ${command.name}\n`);
+    console.log(`  👍️ Loaded command: ${command.name}\n`);
     client.commands.set(command.name, command);
   }
 
