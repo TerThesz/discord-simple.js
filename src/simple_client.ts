@@ -3,10 +3,11 @@ import { ClientInitOptions } from "types";
 import fs from "fs";
 import command_handler from "./handlers/command_handler";
 import interaction_handler from "./handlers/interaction_handler";
+import event_handler from "./handlers/event_handler";
 
 export default class SimpleClient extends Client {
   public commands_folder: string;
-  public commands: Collection<any, any>; /* proper type */
+  public commands: Collection<any, any>; /* TODO: proper type */
 
   public events_folder: string;
 
@@ -39,6 +40,17 @@ export default class SimpleClient extends Client {
     this.on("interactionCreate", (interaction) =>
       interaction_handler(interaction, this)
     );
+
+    return this;
+  };
+
+  public load_events = (): SimpleClient => {
+    if (!fs.existsSync(this.events_folder))
+      throw new Error(
+        `📁 Events folder doesn't exist.\n  You can change the default path of the events folder with options.events_folder.\n`
+      );
+
+    this.once("ready", () => event_handler(this));
 
     return this;
   };

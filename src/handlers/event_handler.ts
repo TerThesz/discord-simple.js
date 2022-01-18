@@ -1,23 +1,33 @@
 import fs from "fs";
 
 export default (client: any) => {
+  console.log("🤔 Loading events...\n");
+
   const event_files = fs
-    .readdirSync("src/events")
+    .readdirSync(client.events_folder)
     .filter((file) => file.endsWith(".event.ts"));
 
   for (const event_file of event_files) {
-    const event = new (require("../events/" + event_file).default)();
+    const event = new (require(client.events_folder +
+      "/" +
+      event_file).default)();
 
     try {
-      if (event.once)
-        return client.once(event.name, (...args: any[]) =>
+      if (event.once) {
+        client.once(event.name, (...args: any[]) =>
           event.execute(...args, client)
         );
-      return client.on(event.name, (...args: any[]) =>
-        event.execute(...args, client)
-      );
+      } else {
+        client.on(event.name, (...args: any[]) =>
+          event.execute(...args, client)
+        );
+      }
+
+      console.log(`  👍️ Registering event: ${event.name}\n`);
     } catch (e) {
       console.error(e);
     }
   }
+
+  console.log("✔️ Successfully registered application events.");
 };
