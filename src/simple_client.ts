@@ -24,10 +24,10 @@ export default class SimpleClient extends Client {
     if (!client_id) throw new Error(`❌ No client id provided!`);
 
     this.commands_folder = resolve(
-      __dirname + "../../../" + (options?.commands_folder || "commands")
+      __dirname + "../../../../" + (options?.commands_folder || "commands")
     );
     this.events_folder = resolve(
-      __dirname + "../../../" + (options?.events_folder || "events")
+      __dirname + "../../../../" + (options?.events_folder || "events")
     );
 
     this.token = token;
