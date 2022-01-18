@@ -1,13 +1,9 @@
 name: 🚀 publish
-
 on:
-  push:
-    branches:
-      - staging
-
+  release:
+    types: staging
 jobs:
-  publish:
-    name: 🚀 publish
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: 📖 checkout
@@ -15,10 +11,11 @@ jobs:
       - name: 📦️ node
         uses: actions/setup-node@v2
         with:
-          node-version: 16
-          registry-url: https://registry.npmjs.org/
-      - name: 🚀 publish
+          node-version: "16.x"
+          registry-url: "https://registry.npmjs.org"
+      - name: 📥️ download and build
+        run: npm install && npm run build
+      - name: 🚀 publish package to npm
         run: npm publish
-        working-directory: ./
         env:
-          NODE_AUTH_TOKEN: ${{secrets.NPM_AUTH_TOKEN}}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
