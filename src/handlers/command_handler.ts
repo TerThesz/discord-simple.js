@@ -27,7 +27,8 @@ export default (client: SimpleClient) => {
 
     handle_options(command);
 
-    if (command.subcommands) {
+    // FIXME: this wont work for some reason
+/*     if (command.subcommands) {
       for (const subcommand of command.subcommands) {
         command.slash_command.addSubcommand((sub_command_object: any) => {
           sub_command_object
@@ -43,7 +44,7 @@ export default (client: SimpleClient) => {
           `    -> Loaded subcommand ${command.name}/${subcommand.name}`
         );
       }
-    }
+    } */
 
     console.log(`  👍️ Loaded command: ${command.name}\n`);
     client.commands.set(command.name, command);
