@@ -15,6 +15,8 @@ export default class SimpleClient extends Client {
   public token: string;
   public client_id: string;
 
+  public guild_id: string | undefined;
+
   constructor(token: string, client_id: string, options?: ClientInitOptions) {
     super({
       intents: [Intents.FLAGS.GUILDS],
@@ -23,15 +25,24 @@ export default class SimpleClient extends Client {
     if (!token) throw new Error(`❌ No token provided!`);
     if (!client_id) throw new Error(`❌ No client id provided!`);
 
+    if (options?.guild_only && !options?.guild_id)
+      throw new Error(
+        "🆔 You need to provide a guild id when using guild only mode."
+      );
+
+    const path_injection = process.env.DEV == "true" ? "/" : "../../../../";
+
     this.commands_folder = resolve(
-      __dirname + "../../../../" + (options?.commands_folder || "commands")
+      __dirname + path_injection + (options?.commands_folder || "commands")
     );
     this.events_folder = resolve(
-      __dirname + "../../../../" + (options?.events_folder || "events")
+      __dirname + path_injection + (options?.events_folder || "events")
     );
 
     this.token = token;
     this.client_id = client_id;
+
+    if (options?.guild_only) this.guild_id = options?.guild_id;
   }
 
   public load_commands = (): SimpleClient => {
@@ -40,7 +51,9 @@ export default class SimpleClient extends Client {
         `📁 Commands folder doesn't exist.\n  You can change the default path of the commands folder with options.commands_folder.\n`
       );
 
-    this.once("ready", () => command_handler(this));
+    this.once("ready", () =>
+      command_handler(this, this.client_id, this.guild_id)
+    );
     this.on("interactionCreate", (interaction) =>
       interaction_handler(interaction, this)
     );

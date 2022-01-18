@@ -4,9 +4,8 @@ import { Routes } from "discord-api-types/v9";
 import { Collection } from "discord.js";
 import fs from "fs";
 import SimpleClient from "simple_client";
-import { CommandType } from "types";
 
-export default (client: SimpleClient) => {
+export default (client: SimpleClient, client_id: string, guild_id?: string) => {
   client.commands = new Collection();
 
   console.log("🤔 Loading commands...\n");
@@ -28,7 +27,7 @@ export default (client: SimpleClient) => {
     handle_options(command);
 
     // FIXME: this wont work for some reason
-/*     if (command.subcommands) {
+    /*     if (command.subcommands) {
       for (const subcommand of command.subcommands) {
         command.slash_command.addSubcommand((sub_command_object: any) => {
           sub_command_object
@@ -57,13 +56,21 @@ export default (client: SimpleClient) => {
   const rest = new REST({ version: "9" }).setToken(client.token);
 
   // TODO: network-wide commands
-  rest
-    .put(
-      Routes.applicationGuildCommands(client.client_id, "753281898226122912"),
-      {
+  if (guild_id) {
+    rest
+      .put(Routes.applicationGuildCommands(client.client_id, guild_id), {
         body: commands,
-      }
-    )
+      })
+      .then(() => console.log("✔️ Successfully registered guild commands."))
+      .catch(console.error);
+
+    return;
+  }
+
+  rest
+    .put(Routes.applicationCommands(client.client_id), {
+      body: commands,
+    })
     .then(() => console.log("✔️ Successfully registered application commands."))
     .catch(console.error);
 };
