@@ -9,7 +9,7 @@
     "merge": "git checkout staging && git pull origin dev && git push && git checkout dev",
     "publish": "yarn build && npm publish",
     "build": "tsc",
-    "postversion": "echo \"cc\""
+    "postversion": "git push && yarn merge"
   },
   "repository": {
     "type": "git",
