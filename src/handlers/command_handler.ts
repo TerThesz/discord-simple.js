@@ -35,6 +35,8 @@ export default (client: SimpleClient) => {
             .setDescription(subcommand.description);
 
           handle_options(subcommand);
+
+          return sub_command_object;
         });
 
         console.log(
