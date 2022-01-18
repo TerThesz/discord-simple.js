@@ -1,7 +1,10 @@
 name: 🚀 publish
+
 on:
   push:
-    types: staging
+    branches:
+      - staging
+
 jobs:
   build:
     runs-on: ubuntu-latest
