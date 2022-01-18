@@ -21,18 +21,10 @@ type Options = Array<{
   name: string;
   description: string;
 
-  type:
-    | "string"
-    | "integer"
-    | "number"
-    | "boolean"
-    | "user"
-    | "channel"
-    | "role"
-    | "mentionable";
-  required: boolean;
+  type: string;
+  required?: boolean;
 
-  choices: Array<{
+  choices?: Array<{
     name: string;
     value: any;
   }>;

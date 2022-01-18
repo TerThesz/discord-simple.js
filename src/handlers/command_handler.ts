@@ -47,6 +47,8 @@ export default (client: SimpleClient) => {
               option_thingy.addChoice(choice.name, choice.value);
             }
           }
+
+          return option_thingy;
         });
       }
     }

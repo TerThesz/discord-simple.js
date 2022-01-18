@@ -2,6 +2,7 @@ import { Client, Collection, Intents } from "discord.js";
 import { ClientInitOptions } from "types";
 import fs from "fs";
 import command_handler from "./handlers/command_handler";
+import interaction_handler from "./handlers/interaction_handler";
 
 export default class SimpleClient extends Client {
   public commands_folder: string;
@@ -26,8 +27,6 @@ export default class SimpleClient extends Client {
 
     this.token = token;
     this.client_id = client_id;
-
-    console.log(this.commands_folder);
   }
 
   public load_commands = (): SimpleClient => {
@@ -36,7 +35,10 @@ export default class SimpleClient extends Client {
         `📁 Commands folder doesn't exist.\n  You can change the default path of the commands folder with options.commands_folder.\n`
       );
 
-    command_handler(this);
+    this.once("ready", () => command_handler(this));
+    this.on("interactionCreate", (interaction) =>
+      interaction_handler(interaction, this)
+    );
 
     return this;
   };
