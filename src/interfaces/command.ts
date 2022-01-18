@@ -8,15 +8,9 @@ export default interface Command {
 
   options?: Options;
 
-  subcommands?: Array<{
-    name: string;
-    description: string;
-
-    options?: Options;
-  }>;
+  subcommands?: Subcommands;
 }
 
-// change in command handler
 type Options = Array<{
   name: string;
   description: string;
@@ -28,4 +22,11 @@ type Options = Array<{
     name: string;
     value: any;
   }>;
+}>;
+
+type Subcommands = Array<{
+  name: string;
+  description: string;
+
+  options?: Options;
 }>;
