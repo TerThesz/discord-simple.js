@@ -1,5 +1,5 @@
-import { CacheType, Interaction } from "discord.js";
-import SimpleClient from "simple_client";
+import { CacheType, Interaction } from 'discord.js';
+import SimpleClient from 'simple_client';
 
 export default (interaction: Interaction<CacheType>, client: SimpleClient) => {
   if (!interaction.isCommand()) return;
@@ -12,7 +12,7 @@ export default (interaction: Interaction<CacheType>, client: SimpleClient) => {
   } catch (error) {
     console.error(error);
     interaction.reply({
-      content: "There was an error while executing this command!",
+      content: 'There was an error while executing this command!',
       ephemeral: true,
     });
   }

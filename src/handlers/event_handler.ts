@@ -1,15 +1,15 @@
-import fs from "fs";
+import fs from 'fs';
 
 export default (client: any) => {
-  console.log("🤔 Loading events...\n");
+  console.log('🤔 Loading events...\n');
 
   const event_files = fs
     .readdirSync(client.events_folder)
-    .filter((file) => file.endsWith(".event.ts"));
+    .filter((file) => file.endsWith('.event.ts'));
 
   for (const event_file of event_files) {
     const event = new (require(client.events_folder +
-      "/" +
+      '/' +
       event_file).default)();
 
     try {
@@ -29,5 +29,5 @@ export default (client: any) => {
     }
   }
 
-  console.log("✔️ Successfully registered application events.");
+  console.log('✔️ Successfully registered application events.');
 };

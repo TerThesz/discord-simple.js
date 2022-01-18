@@ -1,20 +1,20 @@
-import { SlashCommandBuilder } from "@discordjs/builders";
-import { REST } from "@discordjs/rest";
-import { Routes } from "discord-api-types/v9";
-import { Collection } from "discord.js";
-import fs from "fs";
-import SimpleClient from "simple_client";
+import { SlashCommandBuilder } from '@discordjs/builders';
+import { REST } from '@discordjs/rest';
+import { Routes } from 'discord-api-types/v9';
+import { Collection } from 'discord.js';
+import fs from 'fs';
+import SimpleClient from 'simple_client';
 
 export default (client: SimpleClient, client_id: string, guild_id?: string) => {
   client.commands = new Collection();
 
-  console.log("🤔 Loading commands...\n");
+  console.log('🤔 Loading commands...\n');
 
   const command_files = fs
     .readdirSync(client.commands_folder)
-    .filter((file) => file.endsWith("command.ts") || file.endsWith(".ts"));
+    .filter((file) => file.endsWith('command.ts') || file.endsWith('.ts'));
 
-  if (!command_files.length) return console.log("🙁 No commands found.");
+  if (!command_files.length) return console.log('🙁 No commands found.');
 
   for (const command_file of command_files) {
     const command =
@@ -53,7 +53,7 @@ export default (client: SimpleClient, client_id: string, guild_id?: string) => {
     command.slash_command.toJSON()
   );
 
-  const rest = new REST({ version: "9" }).setToken(client.token);
+  const rest = new REST({ version: '9' }).setToken(client.token);
 
   // TODO: network-wide commands
   if (guild_id) {
@@ -61,7 +61,7 @@ export default (client: SimpleClient, client_id: string, guild_id?: string) => {
       .put(Routes.applicationGuildCommands(client.client_id, guild_id), {
         body: commands,
       })
-      .then(() => console.log("✔️ Successfully registered guild commands."))
+      .then(() => console.log('✔️ Successfully registered guild commands.'))
       .catch(console.error);
 
     return;
@@ -71,7 +71,7 @@ export default (client: SimpleClient, client_id: string, guild_id?: string) => {
     .put(Routes.applicationCommands(client.client_id), {
       body: commands,
     })
-    .then(() => console.log("✔️ Successfully registered application commands."))
+    .then(() => console.log('✔️ Successfully registered application commands.'))
     .catch(console.error);
 };
 
@@ -79,15 +79,15 @@ function handle_options(command: any) {
   if (command.options) {
     for (const option of command.options) {
       command.slash_command[
-        "add" +
+        'add' +
           option.type
-            .split("")
+            .split('')
             .map((char: string, index: number) => {
               if (index === 0) return char.toUpperCase();
               return char;
             })
-            .join("") +
-          "Option"
+            .join('') +
+          'Option'
       ]((option_thingy: any) => {
         option_thingy
           .setName(option.name)

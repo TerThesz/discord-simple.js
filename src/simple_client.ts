@@ -1,10 +1,10 @@
-import { Client, Collection, Intents } from "discord.js";
-import { ClientInitOptions } from "types";
-import fs from "fs";
-import command_handler from "./handlers/command_handler";
-import interaction_handler from "./handlers/interaction_handler";
-import event_handler from "./handlers/event_handler";
-import { resolve } from "path";
+import { Client, Collection, Intents } from 'discord.js';
+import { ClientInitOptions } from 'types';
+import fs from 'fs';
+import command_handler from './handlers/command_handler';
+import interaction_handler from './handlers/interaction_handler';
+import event_handler from './handlers/event_handler';
+import { resolve } from 'path';
 
 export default class SimpleClient extends Client {
   public commands_folder: string;
@@ -27,16 +27,16 @@ export default class SimpleClient extends Client {
 
     if (options?.guild_only && !options?.guild_id)
       throw new Error(
-        "🆔 You need to provide a guild id when using guild only mode."
+        '🆔 You need to provide a guild id when using guild only mode.'
       );
 
-    const path_injection = process.env.DEV == "true" ? "/" : "../../../../";
+    const path_injection = process.env.DEV == 'true' ? '/' : '../../../../';
 
     this.commands_folder = resolve(
-      __dirname + path_injection + (options?.commands_folder || "commands")
+      __dirname + path_injection + (options?.commands_folder || 'commands')
     );
     this.events_folder = resolve(
-      __dirname + path_injection + (options?.events_folder || "events")
+      __dirname + path_injection + (options?.events_folder || 'events')
     );
 
     this.token = token;
@@ -51,10 +51,10 @@ export default class SimpleClient extends Client {
         `📁 Commands folder doesn't exist.\n  You can change the default path of the commands folder with options.commands_folder.\n`
       );
 
-    this.once("ready", () =>
+    this.once('ready', () =>
       command_handler(this, this.client_id, this.guild_id)
     );
-    this.on("interactionCreate", (interaction) =>
+    this.on('interactionCreate', (interaction) =>
       interaction_handler(interaction, this)
     );
 
@@ -67,7 +67,7 @@ export default class SimpleClient extends Client {
         `📁 Events folder doesn't exist.\n  You can change the default path of the events folder with options.events_folder.\n`
       );
 
-    this.once("ready", () => event_handler(this));
+    this.once('ready', () => event_handler(this));
 
     return this;
   };

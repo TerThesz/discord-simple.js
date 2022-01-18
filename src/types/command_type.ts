@@ -1,4 +1,4 @@
-import { Interaction } from "discord.js";
+import { Interaction } from 'discord.js';
 
 type CommandType = {
   name: string;
