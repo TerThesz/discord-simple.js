@@ -8,7 +8,7 @@ export default (interaction: Interaction<CacheType>, client: CustomClient) => {
   if (!command) return;
 
   try {
-    command.execute(interaction);
+    command.execute(interaction, client);
   } catch (error) {
     console.error(error);
     interaction.reply({

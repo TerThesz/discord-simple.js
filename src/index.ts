@@ -1,7 +1,7 @@
 // TODO: configuration
 import CustomClient from './client';
 import { ClientInitOptions, CommandType } from './types';
-import { Command } from './interfaces';
+import { SimpleCommand, SimpleEvent } from './interfaces';
 
 // TODO: make it async
 
@@ -11,4 +11,4 @@ class SimpleClient extends CustomClient {
   }
 }
 
-export { SimpleClient, CommandType, Command };
+export { SimpleClient, CommandType, SimpleCommand, SimpleEvent };

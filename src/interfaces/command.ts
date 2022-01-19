@@ -1,10 +1,11 @@
-import { Interaction } from 'discord.js';
+import { CommandInteraction } from 'discord.js';
+import { SimpleClient } from 'index';
 
 export default interface Command {
   name: string;
   description: string;
 
-  execute(interaction: Interaction): Promise<void>;
+  execute(interaction: CommandInteraction, client: SimpleClient): Promise<void>;
 
   options?: Options;
 

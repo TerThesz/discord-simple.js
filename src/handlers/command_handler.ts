@@ -5,7 +5,7 @@ import { Collection } from 'discord.js';
 import fs from 'fs';
 import CustomClient from 'client';
 
-export default (client: CustomClient, client_id: string, guild_id?: string) => {
+export default (client: CustomClient, guild_id?: string) => {
   client.commands = new Collection();
 
   console.log('🤔 Loading commands...\n');

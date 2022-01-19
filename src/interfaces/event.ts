@@ -1,6 +1,8 @@
+import { SimpleClient } from 'index';
+
 export default interface Event {
   name: string;
   once?: boolean;
 
-  execute(...args: any[]): void;
+  execute(interaction: any, client: SimpleClient): void;
 }

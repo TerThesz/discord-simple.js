@@ -1,4 +1,4 @@
-import Command from './command';
+import SimpleCommand from './command';
 import SimpleEvent from './event';
 
-export { Command, SimpleEvent };
+export { SimpleCommand, SimpleEvent };

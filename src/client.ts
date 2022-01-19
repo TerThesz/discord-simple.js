@@ -51,9 +51,7 @@ export default class CustomClient extends Client {
         `📁 Commands folder doesn't exist.\n  You can change the default path of the commands folder with options.commands_folder.\n`
       );
 
-    this.once('ready', () =>
-      command_handler(this, this.client_id, this.guild_id)
-    );
+    this.once('ready', () => command_handler(this, this.guild_id));
     this.on('interactionCreate', (interaction) =>
       interaction_handler(interaction, this)
     );
