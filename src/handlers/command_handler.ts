@@ -3,9 +3,9 @@ import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { Collection } from 'discord.js';
 import fs from 'fs';
-import SimpleClient from 'simple_client';
+import CustomClient from 'client';
 
-export default (client: SimpleClient, client_id: string, guild_id?: string) => {
+export default (client: CustomClient, client_id: string, guild_id?: string) => {
   client.commands = new Collection();
 
   console.log('🤔 Loading commands...\n');

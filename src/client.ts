@@ -6,7 +6,7 @@ import interaction_handler from './handlers/interaction_handler';
 import event_handler from './handlers/event_handler';
 import { resolve } from 'path';
 
-export default class SimpleClient extends Client {
+export default class CustomClient extends Client {
   public commands_folder: string;
   public commands: Collection<any, any>; /* TODO: proper type */
 
@@ -47,7 +47,7 @@ export default class SimpleClient extends Client {
     if (options?.guild_only) this.guild_id = options?.guild_id;
   }
 
-  public load_commands = (): SimpleClient => {
+  public load_commands = (): CustomClient => {
     if (!fs.existsSync(this.commands_folder))
       throw new Error(
         `📁 Commands folder doesn't exist.\n  You can change the default path of the commands folder with options.commands_folder.\n`
@@ -63,7 +63,7 @@ export default class SimpleClient extends Client {
     return this;
   };
 
-  public load_events = (): SimpleClient => {
+  public load_events = (): CustomClient => {
     if (!fs.existsSync(this.events_folder))
       throw new Error(
         `📁 Events folder doesn't exist.\n  You can change the default path of the events folder with options.events_folder.\n`
