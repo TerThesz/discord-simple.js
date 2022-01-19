@@ -20,7 +20,7 @@ export default class CustomClient extends Client {
   constructor(token: string, client_id: string, options?: ClientInitOptions) {
     super({
       intents: [Intents.FLAGS.GUILDS],
-    });
+    } as any);
 
     if (!token) throw new Error(`❌ No token provided!`);
     if (!client_id) throw new Error(`❌ No client id provided!`);
@@ -38,8 +38,6 @@ export default class CustomClient extends Client {
     this.events_folder = resolve(
       __dirname + path_injection + (options?.events_folder || 'events')
     );
-
-    console.log(this.commands_folder);
 
     this.token = token;
     this.client_id = client_id;
