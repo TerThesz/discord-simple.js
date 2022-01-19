@@ -1,6 +1,6 @@
 import { Client, Collection, Intents } from 'discord.js';
 import { ClientInitOptions } from 'types';
-import fs from 'fs';
+import fs, { cp } from 'fs';
 import command_handler from './handlers/command_handler';
 import interaction_handler from './handlers/interaction_handler';
 import event_handler from './handlers/event_handler';
@@ -38,6 +38,8 @@ export default class SimpleClient extends Client {
     this.events_folder = resolve(
       __dirname + path_injection + (options?.events_folder || 'events')
     );
+
+    console.log(this.commands_folder);
 
     this.token = token;
     this.client_id = client_id;

@@ -9,7 +9,6 @@
 !/.yarn/cache
 #/.pnp.*
 
-test/
 # Logs
 logs
 *.log

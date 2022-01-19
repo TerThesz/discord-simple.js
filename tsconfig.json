@@ -1,4 +1,9 @@
 {
+  "typeAcquisition": {
+    "include": [
+      "jest"
+    ]
+  },
   "compilerOptions": {
     "target": "es2021",
     "module": "commonjs",
