@@ -71,7 +71,7 @@ export default class CustomClient extends Client {
 
   public load_commands = (): CustomClient => {
     if (!fs.existsSync(this.commands_folder))
-      return this._folder_error(this.events_folder);
+      return this._folder_error(this.commands_folder);
 
     this.once('ready', () =>
       command_handler(
