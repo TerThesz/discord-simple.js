@@ -47,9 +47,7 @@ export default class CustomClient extends Client {
 
   public load_commands = (): CustomClient => {
     if (!fs.existsSync(this.commands_folder))
-      throw new Error(
-        `📁 Commands folder doesn't exist.\n  You can change the default path of the commands folder with options.commands_folder.\n`
-      );
+      return this._folder_error(this.events_folder);
 
     this.once('ready', () => command_handler(this, this.guild_id));
     this.on('interactionCreate', (interaction) =>
@@ -61,13 +59,19 @@ export default class CustomClient extends Client {
 
   public load_events = (): CustomClient => {
     if (!fs.existsSync(this.events_folder))
-      throw new Error(
-        `📁 Events folder doesn't exist.\n  You can change the default path of the events folder with options.events_folder.\n`
-      );
+      return this._folder_error(this.events_folder);
 
     this.once('ready', () => event_handler(this));
 
     return this;
+  };
+
+  _folder_error = (path: string) => {
+    const folder = path.split('/')[path.split('/').length - 1];
+
+    throw new Error(
+      `📁 ${folder} folder doesn't exist.\n  You can change the default path of this folder with options.${folder} or with options.home_folder.\n\ncurrent path: ${path}`
+    );
   };
 
   public login = async (
