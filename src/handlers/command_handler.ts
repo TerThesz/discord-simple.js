@@ -4,7 +4,7 @@ import { Routes } from 'discord-api-types/v9';
 import { Collection } from 'discord.js';
 import fs from 'fs';
 import CustomClient from 'client';
-import { SimpleCommand } from 'interfaces';
+import { SimpleCommand } from 'classes';
 
 export default (client: CustomClient, guild_id?: string) => {
   client.commands = new Collection<string, SimpleCommand>();
@@ -21,7 +21,7 @@ export default (client: CustomClient, guild_id?: string) => {
     const command =
       new (require(`${client.commands_folder}/${command_file}`).default)();
 
-    command.slash_command = new SlashCommandBuilder()
+    command._slash_command = new SlashCommandBuilder()
       .setName(command.name)
       .setDescription(command.description);
 
@@ -32,7 +32,7 @@ export default (client: CustomClient, guild_id?: string) => {
   }
 
   const commands = client.commands.map((command: any) =>
-    command.slash_command.toJSON()
+    command._slash_command.toJSON()
   );
 
   const rest = new REST({ version: '9' }).setToken(client.token);
@@ -56,10 +56,10 @@ export default (client: CustomClient, guild_id?: string) => {
     .catch(console.error);
 };
 
-function handle_options(command: any) {
+function handle_options(command: SimpleCommand) {
   if (command.options) {
     for (const option of command.options) {
-      command.slash_command[
+      command._slash_command[
         'add' +
           option.type
             .split('')
@@ -86,3 +86,5 @@ function handle_options(command: any) {
     }
   }
 }
+
+function handle_aliases(command: SimpleCommand) {}

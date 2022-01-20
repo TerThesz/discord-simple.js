@@ -1,15 +1,27 @@
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { CommandInteraction } from 'discord.js';
 import { SimpleClient } from 'index';
 
-export default interface Command {
+export default abstract class Command {
+  private constructor() {
+    this._slash_command = new SlashCommandBuilder();
+  }
+
   name: string;
   description: string;
 
-  execute(interaction: CommandInteraction, client: SimpleClient): Promise<any>;
+  aliases?: Array<string>;
+
+  execute: (
+    interaction: CommandInteraction,
+    client: SimpleClient
+  ) => Promise<any>;
 
   options?: Options;
 
   subcommands?: Subcommands;
+
+  readonly _slash_command?: any;
 }
 
 type Options = Array<{

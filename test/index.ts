@@ -1,6 +1,5 @@
 import { SimpleClient } from '../src';
 import dotenv from 'dotenv';
-import { Intents } from 'discord.js';
 
 dotenv.config();
 

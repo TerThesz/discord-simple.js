@@ -4,8 +4,8 @@ import fs from 'fs';
 import command_handler from './handlers/command_handler';
 import interaction_handler from './handlers/interaction_handler';
 import event_handler from './handlers/event_handler';
-import path, { resolve } from 'path';
-import { SimpleCommand } from 'interfaces';
+import { resolve } from 'path';
+import { SimpleCommand } from 'classes';
 
 export default class CustomClient extends Client {
   public commands_folder: string;
