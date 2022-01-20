@@ -15,6 +15,8 @@ export default abstract class Command {
 
   aliases?: Array<string>;
 
+  owner_only?: boolean;
+
   abstract execute(
     interaction: CommandInteraction,
     client: SimpleClient
