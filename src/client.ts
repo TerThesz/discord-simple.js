@@ -13,6 +13,12 @@ export default class CustomClient extends Client {
 
   public events_folder: string;
 
+  public timestamps: Array<{
+    user_id: string;
+    command_name: string;
+    timestamp: number;
+  }>;
+
   public token: string;
   public client_id: string;
 

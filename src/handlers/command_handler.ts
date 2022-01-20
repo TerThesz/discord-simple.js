@@ -1,4 +1,3 @@
-import { SlashCommandBuilder } from '@discordjs/builders';
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { Collection } from 'discord.js';
@@ -8,6 +7,11 @@ import { SimpleCommand } from 'classes';
 
 export default (client: CustomClient, guild_id?: string) => {
   client.commands = new Collection<string, SimpleCommand>();
+  client.timestamps = new Array<{
+    user_id: string;
+    command_name: string;
+    timestamp: number;
+  }>();
 
   console.log('🤔 Loading commands...\n');
 

@@ -10,6 +10,9 @@ export default abstract class Command {
   name: string;
   description: string;
 
+  cooldown?: number;
+  global_cooldown?: number;
+
   aliases?: Array<string>;
 
   abstract execute(
