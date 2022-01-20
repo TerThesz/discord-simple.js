@@ -1,5 +1,3 @@
-import { Intents } from 'discord.js';
-
 type ClientInitOptions = {
   commands_folder?: string;
   events_folder?: string;
@@ -8,6 +6,8 @@ type ClientInitOptions = {
   guild_id?: string;
 
   intents?: Array<number>;
+
+  development_mode?: boolean;
 };
 
 export default ClientInitOptions;

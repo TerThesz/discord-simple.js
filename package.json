@@ -8,7 +8,7 @@
     "dist/**/*"
   ],
   "scripts": {
-    "test": "DEV=true nodemon --exec ts-node test/index.ts",
+    "test": "PACKAGE_TESTING=true DEV=true nodemon --exec ts-node test/index.ts",
     "merge": "git checkout staging && git pull origin dev && git push && git checkout dev",
     "publish_package": "yarn build && npm publish",
     "build": "tsc",
