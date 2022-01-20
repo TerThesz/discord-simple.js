@@ -86,5 +86,3 @@ function handle_options(command: SimpleCommand) {
     }
   }
 }
-
-function handle_aliases(command: SimpleCommand) {}
