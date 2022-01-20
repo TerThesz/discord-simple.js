@@ -69,4 +69,20 @@ export default class CustomClient extends Client {
 
     return this;
   };
+
+  public login = async (
+    token?: string,
+    cb: Function = () => console.log('\n🔓️  Bot has successfully logged in.\n')
+  ): Promise<string> => {
+    if (typeof token === 'function') {
+      cb = token;
+      token = undefined;
+    }
+
+    const output = await super.login(token);
+
+    cb();
+
+    return output;
+  };
 }

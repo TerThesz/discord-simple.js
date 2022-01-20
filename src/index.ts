@@ -1,4 +1,3 @@
-// TODO: configuration
 import CustomClient from './client';
 import { ClientInitOptions, CommandType } from './types';
 import { SimpleCommand, SimpleEvent } from './interfaces';
