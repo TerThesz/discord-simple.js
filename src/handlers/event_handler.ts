@@ -1,7 +1,9 @@
 import fs from 'fs';
 
 export default async (client: any) => {
-  await console.log('🤔 Loading events...\n');
+  await console.log('\n🤔 Loading events...');
+
+  let number_of_events = 0;
 
   const event_files = await fs
     .readdirSync(client.events_folder)
@@ -23,11 +25,13 @@ export default async (client: any) => {
         );
       }
 
-      await console.log(`  👍️ Registering event: ${event.name}\n`);
+      number_of_events++;
     } catch (e) {
       console.error(e);
     }
   }
 
-  await console.log('✔️ Successfully registered application events.');
+  await console.log(
+    `\n✔️ Successfully registered ${number_of_events} application event/-s.`
+  );
 };

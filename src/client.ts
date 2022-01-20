@@ -43,7 +43,7 @@ export default class CustomClient extends Client {
     this.development_mode =
       (options?.development_mode || process.env.DEV === 'true') ?? false;
 
-    if (this.development_mode) console.log('👷 Development mode enabled.\n');
+    if (this.development_mode) console.log('👷 Development mode enabled.');
 
     let path_injection =
       process.env.PACKAGE_TESTING === 'true' ? '/' : '../../../../src/';
@@ -109,7 +109,7 @@ export default class CustomClient extends Client {
 
   public login = async (
     token?: string,
-    cb: Function = () => console.log('\n🔓️  Bot has successfully logged in.\n')
+    cb: Function = () => console.log('\n🔓️  Bot has successfully logged in.')
   ): Promise<string> => {
     if (typeof token === 'function') {
       cb = token;

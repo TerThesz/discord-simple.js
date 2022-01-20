@@ -13,13 +13,13 @@ export default async (client: CustomClient, guild_id?: string) => {
     timestamp: number;
   }>();
 
-  await console.log('🤔 Loading commands...\n');
+  await console.log('\n🤔 Loading commands...');
 
   const command_files = await fs
     .readdirSync(client.commands_folder)
     .filter((file) => file.endsWith('command.ts') || file.endsWith('.ts'));
 
-  if (!command_files.length) return console.log('🙁 No commands found.');
+  if (!command_files.length) return console.log('\n🙁 No commands found.');
 
   for (const command_file of command_files) {
     const command =
@@ -29,7 +29,31 @@ export default async (client: CustomClient, guild_id?: string) => {
       .setName(command.name)
       .setDescription(command.description);
 
-    await handle_options(command);
+    if (command.options) {
+      for (const option of command.options) {
+        await handle_option(command._slash_command, option);
+      }
+    }
+
+    if (command.subcommands) {
+      for (const subcommand of command.subcommands) {
+        await command._slash_command.addSubcommand(
+          (subcommand_builder: any) => {
+            subcommand_builder
+              .setName(subcommand.name)
+              .setDescription(subcommand.description);
+
+            if (subcommand.options) {
+              for (const option of subcommand.options) {
+                handle_option(subcommand_builder, option);
+              }
+            }
+
+            return subcommand_builder;
+          }
+        );
+      }
+    }
 
     await client.commands.set(command.name, command);
   }
@@ -47,7 +71,7 @@ export default async (client: CustomClient, guild_id?: string) => {
       })
       .then(() =>
         console.log(
-          `✔️ Successfully registered ${client.commands.size} guild command/-s.`
+          `\n✔️ Successfully registered ${client.commands.size} guild command/-s.`
         )
       )
       .catch(console.error);
@@ -61,39 +85,35 @@ export default async (client: CustomClient, guild_id?: string) => {
     })
     .then(() =>
       console.log(
-        `✔️ Successfully registered ${client.commands.size} application command/-s.`
+        `\n✔️ Successfully registered ${client.commands.size} application command/-s.`
       )
     )
     .catch(console.error);
 };
 
-function handle_options(command: SimpleCommand) {
-  if (command.options) {
-    for (const option of command.options) {
-      command._slash_command[
-        'add' +
-          option.type
-            .split('')
-            .map((char: string, index: number) => {
-              if (index === 0) return char.toUpperCase();
-              return char;
-            })
-            .join('') +
-          'Option'
-      ]((option_thingy: any) => {
-        option_thingy
-          .setName(option.name)
-          .setDescription(option.description)
-          .setRequired(option.required || false);
+function handle_option(command: any, option: any) {
+  command[
+    'add' +
+      option.type
+        .split('')
+        .map((char: string, index: number) => {
+          if (index === 0) return char.toUpperCase();
+          return char;
+        })
+        .join('') +
+      'Option'
+  ]((option_thingy: any) => {
+    option_thingy
+      .setName(option.name)
+      .setDescription(option.description)
+      .setRequired(option.required || false);
 
-        if (option.choices) {
-          for (const choice of option.choices) {
-            option_thingy.addChoice(choice.name, choice.value);
-          }
-        }
-
-        return option_thingy;
-      });
+    if (option.choices) {
+      for (const choice of option.choices) {
+        option_thingy.addChoice(choice.name, choice.value);
+      }
     }
-  }
+
+    return option_thingy;
+  });
 }

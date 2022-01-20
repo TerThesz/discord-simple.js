@@ -23,4 +23,28 @@ export default class PrdCommand extends SimpleCommand {
 
     client.user?.setActivity('cauko', { type: 'WATCHING' });
   }
+
+  subcommands = [
+    {
+      name: 'subcommand',
+      description: 'A subcommand',
+
+      options: [
+        {
+          name: 'option',
+          description: 'An option',
+
+          type: 'string',
+          required: true,
+
+          choices: [
+            {
+              name: 'choice',
+              value: 'value',
+            },
+          ],
+        },
+      ],
+    },
+  ];
 }
