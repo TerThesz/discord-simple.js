@@ -30,7 +30,7 @@ export default class CustomClient extends Client {
         '🆔 You need to provide a guild id when using guild only mode.'
       );
 
-    const path_injection = process.env.DEV == 'true' ? '/' : '../../../../';
+    const path_injection = process.env.DEV == 'true' ? '/' : '../../../../src/';
 
     this.commands_folder = resolve(
       __dirname + path_injection + (options?.commands_folder || 'commands')

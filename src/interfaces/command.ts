@@ -5,7 +5,7 @@ export default interface Command {
   name: string;
   description: string;
 
-  execute(interaction: CommandInteraction, client: SimpleClient): Promise<void>;
+  execute(interaction: CommandInteraction, client: SimpleClient): Promise<any>;
 
   options?: Options;
 
