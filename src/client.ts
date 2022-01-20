@@ -20,7 +20,7 @@ export default class CustomClient extends Client {
 
   constructor(token: string, client_id: string, options?: ClientInitOptions) {
     super({
-      intents: [Intents.FLAGS.GUILDS],
+      intents: [options?.intents],
     } as any);
 
     if (!token) throw new Error(`❌ No token provided!`);
