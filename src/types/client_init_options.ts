@@ -8,6 +8,8 @@ type ClientInitOptions = {
   intents?: Array<number>;
 
   development_mode?: boolean;
+
+  home_folder?: string;
 };
 
 export default ClientInitOptions;

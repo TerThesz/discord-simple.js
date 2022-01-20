@@ -4,7 +4,7 @@ import fs from 'fs';
 import command_handler from './handlers/command_handler';
 import interaction_handler from './handlers/interaction_handler';
 import event_handler from './handlers/event_handler';
-import { resolve } from 'path';
+import path, { resolve } from 'path';
 import { SimpleCommand } from 'interfaces';
 
 export default class CustomClient extends Client {
@@ -39,8 +39,15 @@ export default class CustomClient extends Client {
 
     if (this.development_mode) console.log('👷 Development mode enabled.\n');
 
-    const path_injection =
+    let path_injection =
       process.env.PACKAGE_TESTING === 'true' ? '/' : '../../../../src/';
+
+    if (options?.home_folder) {
+      path_injection += 'home_folder';
+
+      if (path_injection[path_injection.length - 1] !== '/')
+        path_injection += '/';
+    }
 
     this.commands_folder = resolve(
       __dirname + path_injection + (options?.commands_folder || 'commands')
