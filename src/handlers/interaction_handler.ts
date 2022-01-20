@@ -24,7 +24,10 @@ export default async (
     return;
   }
 
-  if (command.permissions) {
+  if (
+    command.permissions &&
+    interaction.user.id !== interaction.guild?.ownerId
+  ) {
     if (!client.application?.owner) await client.application?.fetch();
 
     const permission = await command.permissions.find((p) => {
@@ -47,7 +50,10 @@ export default async (
     }
   }
 
-  if (command.global_cooldown || command.cooldown) {
+  if (
+    (command.global_cooldown || command.cooldown) &&
+    interaction.user.id !== interaction.guild?.ownerId
+  ) {
     const cooldown = (await (command.global_cooldown ||
       command.cooldown)) as number;
 
