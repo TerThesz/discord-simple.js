@@ -21,7 +21,7 @@ export default (client: CustomClient, guild_id?: string) => {
     const command =
       new (require(`${client.commands_folder}/${command_file}`).default)();
 
-    command._slash_command = new SlashCommandBuilder()
+    command._slash_command
       .setName(command.name)
       .setDescription(command.description);
 

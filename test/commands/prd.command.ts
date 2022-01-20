@@ -1,7 +1,7 @@
 import { CommandInteraction } from 'discord.js';
 import { SimpleClient, SimpleCommand } from '../../src';
 
-export default class PrdCommand implements SimpleCommand {
+export default class PrdCommand extends SimpleCommand {
   name = 'prd';
   description = 'Prints the current date and time. (not really)';
 

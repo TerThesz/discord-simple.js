@@ -3,7 +3,7 @@ import { CommandInteraction } from 'discord.js';
 import { SimpleClient } from 'index';
 
 export default abstract class Command {
-  private constructor() {
+  constructor() {
     this._slash_command = new SlashCommandBuilder();
   }
 
@@ -12,10 +12,10 @@ export default abstract class Command {
 
   aliases?: Array<string>;
 
-  execute: (
+  abstract execute(
     interaction: CommandInteraction,
     client: SimpleClient
-  ) => Promise<any>;
+  ): Promise<any>;
 
   options?: Options;
 
