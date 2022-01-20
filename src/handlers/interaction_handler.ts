@@ -7,24 +7,33 @@ export default (interaction: Interaction<CacheType>, client: CustomClient) => {
   const command = client.commands.get(interaction.commandName.toLowerCase());
   if (!command) return;
 
-  if (command.cooldown) {
+  if (command.global_cooldown || command.cooldown) {
+    const cooldown = (command.global_cooldown || command.cooldown) as number;
+
     const timestamp = client.timestamps.find(
-      (cooldown) => cooldown.user_id === interaction.user.id
+      (cooldown) =>
+        cooldown.user_id === '*' || cooldown.user_id === interaction.user.id
     );
 
     if (timestamp) {
-      interaction.reply({
-        content: `⏳ You need to wait ${Math.floor(
-          command.cooldown - (new Date().getTime() - timestamp.timestamp) / 1000
-        )} seconds before using this command again.`,
-        ephemeral: true,
-      });
+      interaction.reply(
+        timestamp.user_id === '*'
+          ? `🌏️⏳ Global Cooldown: You need to wait ${Math.floor(
+              cooldown - (new Date().getTime() - timestamp.timestamp) / 1000
+            )} seconds before using this command.`
+          : {
+              content: `⏳ Cooldown: You need to wait ${Math.floor(
+                cooldown - (new Date().getTime() - timestamp.timestamp) / 1000
+              )} seconds before using this command again.`,
+              ephemeral: true,
+            }
+      );
 
       return;
     }
 
     client.timestamps.push({
-      user_id: interaction.user.id,
+      user_id: command.global_cooldown ? '*' : interaction.user.id,
       command_name: interaction.commandName.toLowerCase(),
       timestamp: new Date().getTime(),
     });
@@ -36,7 +45,7 @@ export default (interaction: Interaction<CacheType>, client: CustomClient) => {
         ),
         1
       );
-    }, command.cooldown * 1000);
+    }, cooldown * 1000);
   }
 
   try {
