@@ -9,6 +9,15 @@ export default class PrdCommand extends SimpleCommand {
 
   owner_only = true;
 
+  permissions = [
+    {
+      id: '933766741807476776',
+      type: 'role',
+      permission: true,
+    },
+  ];
+  use_without_permission = true;
+
   async execute(interaction: CommandInteraction, client: SimpleClient) {
     await interaction.reply('cauko');
 

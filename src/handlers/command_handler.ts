@@ -31,9 +31,6 @@ export default async (client: CustomClient, guild_id?: string) => {
 
     await handle_options(command);
 
-    if (command.permissions?.length)
-      await command.permissions.set(command.permissions);
-
     await client.commands.set(command.name, command);
   }
 

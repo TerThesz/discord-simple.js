@@ -1,10 +1,15 @@
-import { CacheType, Interaction } from 'discord.js';
+import { CacheType, GuildMember, Interaction } from 'discord.js';
 import CustomClient from 'client';
 
-export default (interaction: Interaction<CacheType>, client: CustomClient) => {
+export default async (
+  interaction: Interaction<CacheType>,
+  client: CustomClient
+) => {
   if (!interaction.isCommand()) return;
 
-  const command = client.commands.get(interaction.commandName.toLowerCase());
+  const command = await client.commands.get(
+    interaction.commandName.toLowerCase()
+  );
   if (!command) return;
 
   if (
@@ -19,16 +24,40 @@ export default (interaction: Interaction<CacheType>, client: CustomClient) => {
     return;
   }
 
-  if (command.global_cooldown || command.cooldown) {
-    const cooldown = (command.global_cooldown || command.cooldown) as number;
+  if (command.permissions) {
+    if (!client.application?.owner) await client.application?.fetch();
 
-    const timestamp = client.timestamps.find(
+    const permission = await command.permissions.find((p) => {
+      if (p.type === 'user') return p.id === interaction.user.id;
+
+      return (interaction.member as GuildMember)?.roles.cache.has(p.id);
+    });
+
+    if (
+      (!command.use_without_permission &&
+        (!permission || !permission.permission)) ||
+      (permission && !permission.permission)
+    ) {
+      interaction.reply({
+        content: '🚫 You do not have permission to use this command.',
+        ephemeral: true,
+      });
+
+      return;
+    }
+  }
+
+  if (command.global_cooldown || command.cooldown) {
+    const cooldown = (await (command.global_cooldown ||
+      command.cooldown)) as number;
+
+    const timestamp = await client.timestamps.find(
       (cooldown) =>
         cooldown.user_id === '*' || cooldown.user_id === interaction.user.id
     );
 
     if (timestamp) {
-      interaction.reply(
+      await interaction.reply(
         timestamp.user_id === '*'
           ? `🌏️⏳ Global Cooldown: You need to wait ${Math.floor(
               cooldown - (new Date().getTime() - timestamp.timestamp) / 1000
@@ -44,13 +73,13 @@ export default (interaction: Interaction<CacheType>, client: CustomClient) => {
       return;
     }
 
-    client.timestamps.push({
+    await client.timestamps.push({
       user_id: command.global_cooldown ? '*' : interaction.user.id,
       command_name: interaction.commandName.toLowerCase(),
       timestamp: new Date().getTime(),
     });
 
-    setTimeout(() => {
+    await setTimeout(() => {
       client.timestamps.splice(
         client.timestamps.findIndex(
           (cooldown) => cooldown.user_id === interaction.user.id
@@ -61,7 +90,7 @@ export default (interaction: Interaction<CacheType>, client: CustomClient) => {
   }
 
   try {
-    command.execute(interaction, client);
+    await command.execute(interaction, client);
   } catch (error) {
     console.error(error);
     interaction.reply({

@@ -18,6 +18,7 @@ export default abstract class Command {
   owner_only?: boolean;
 
   permissions?: Permissions;
+  use_without_permission?: boolean;
 
   abstract execute(
     interaction: CommandInteraction,
