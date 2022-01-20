@@ -7,6 +7,8 @@ export default class PrdCommand extends SimpleCommand {
 
   global_cooldown = 20;
 
+  owner_only = true;
+
   async execute(interaction: CommandInteraction, client: SimpleClient) {
     await interaction.reply('cauko');
 

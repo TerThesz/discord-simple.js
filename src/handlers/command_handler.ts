@@ -5,17 +5,17 @@ import fs from 'fs';
 import CustomClient from 'client';
 import { SimpleCommand } from 'classes';
 
-export default (client: CustomClient, guild_id?: string) => {
-  client.commands = new Collection<string, SimpleCommand>();
-  client.timestamps = new Array<{
+export default async (client: CustomClient, guild_id?: string) => {
+  client.commands = await new Collection<string, SimpleCommand>();
+  client.timestamps = await new Array<{
     user_id: string;
     command_name: string;
     timestamp: number;
   }>();
 
-  console.log('🤔 Loading commands...\n');
+  await console.log('🤔 Loading commands...\n');
 
-  const command_files = fs
+  const command_files = await fs
     .readdirSync(client.commands_folder)
     .filter((file) => file.endsWith('command.ts') || file.endsWith('.ts'));
 
@@ -23,30 +23,36 @@ export default (client: CustomClient, guild_id?: string) => {
 
   for (const command_file of command_files) {
     const command =
-      new (require(`${client.commands_folder}/${command_file}`).default)();
+      await new (require(`${client.commands_folder}/${command_file}`).default)();
 
-    command._slash_command
+    await command._slash_command
       .setName(command.name)
       .setDescription(command.description);
 
-    handle_options(command);
+    await handle_options(command);
 
-    console.log(`  👍️ Loaded command: ${command.name}\n`);
-    client.commands.set(command.name, command);
+    if (command.permissions?.length)
+      await command.permissions.set(command.permissions);
+
+    await client.commands.set(command.name, command);
   }
 
-  const commands = client.commands.map((command: any) =>
+  const commands = await client.commands.map((command: any) =>
     command._slash_command.toJSON()
   );
 
-  const rest = new REST({ version: '9' }).setToken(client.token);
+  const rest = await new REST({ version: '9' }).setToken(client.token);
 
   if (guild_id) {
     rest
       .put(Routes.applicationGuildCommands(client.client_id, guild_id), {
         body: commands,
       })
-      .then(() => console.log('✔️ Successfully registered guild commands.'))
+      .then(() =>
+        console.log(
+          `✔️ Successfully registered ${client.commands.size} guild command/-s.`
+        )
+      )
       .catch(console.error);
 
     return;
@@ -56,7 +62,11 @@ export default (client: CustomClient, guild_id?: string) => {
     .put(Routes.applicationCommands(client.client_id), {
       body: commands,
     })
-    .then(() => console.log('✔️ Successfully registered application commands.'))
+    .then(() =>
+      console.log(
+        `✔️ Successfully registered ${client.commands.size} application command/-s.`
+      )
+    )
     .catch(console.error);
 };
 

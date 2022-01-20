@@ -118,7 +118,7 @@ export default class CustomClient extends Client {
 
     const output = await super.login(token);
 
-    cb();
+    await cb();
 
     return output;
   };

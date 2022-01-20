@@ -1,14 +1,14 @@
 import fs from 'fs';
 
-export default (client: any) => {
-  console.log('🤔 Loading events...\n');
+export default async (client: any) => {
+  await console.log('🤔 Loading events...\n');
 
-  const event_files = fs
+  const event_files = await fs
     .readdirSync(client.events_folder)
     .filter((file) => file.endsWith('.event.ts'));
 
   for (const event_file of event_files) {
-    const event = new (require(client.events_folder +
+    const event = await new (require(client.events_folder +
       '/' +
       event_file).default)();
 
@@ -23,11 +23,11 @@ export default (client: any) => {
         );
       }
 
-      console.log(`  👍️ Registering event: ${event.name}\n`);
+      await console.log(`  👍️ Registering event: ${event.name}\n`);
     } catch (e) {
       console.error(e);
     }
   }
 
-  console.log('✔️ Successfully registered application events.');
+  await console.log('✔️ Successfully registered application events.');
 };

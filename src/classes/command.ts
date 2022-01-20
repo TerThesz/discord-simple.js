@@ -17,6 +17,8 @@ export default abstract class Command {
 
   owner_only?: boolean;
 
+  permissions?: Permissions;
+
   abstract execute(
     interaction: CommandInteraction,
     client: SimpleClient
@@ -47,4 +49,10 @@ type Subcommands = Array<{
   description: string;
 
   options?: Options;
+}>;
+
+type Permissions = Array<{
+  id: string;
+  type: string;
+  permission: boolean;
 }>;
