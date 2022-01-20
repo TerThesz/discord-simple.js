@@ -4,9 +4,10 @@ import { Routes } from 'discord-api-types/v9';
 import { Collection } from 'discord.js';
 import fs from 'fs';
 import CustomClient from 'client';
+import { SimpleCommand } from 'interfaces';
 
 export default (client: CustomClient, guild_id?: string) => {
-  client.commands = new Collection();
+  client.commands = new Collection<string, SimpleCommand>();
 
   console.log('🤔 Loading commands...\n');
 
@@ -26,25 +27,6 @@ export default (client: CustomClient, guild_id?: string) => {
 
     handle_options(command);
 
-    // FIXME: this wont work for some reason
-    /*     if (command.subcommands) {
-      for (const subcommand of command.subcommands) {
-        command.slash_command.addSubcommand((sub_command_object: any) => {
-          sub_command_object
-            .setName(subcommand.name)
-            .setDescription(subcommand.description);
-
-          handle_options(subcommand);
-
-          return sub_command_object;
-        });
-
-        console.log(
-          `    -> Loaded subcommand ${command.name}/${subcommand.name}`
-        );
-      }
-    } */
-
     console.log(`  👍️ Loaded command: ${command.name}\n`);
     client.commands.set(command.name, command);
   }
@@ -55,7 +37,6 @@ export default (client: CustomClient, guild_id?: string) => {
 
   const rest = new REST({ version: '9' }).setToken(client.token);
 
-  // TODO: network-wide commands
   if (guild_id) {
     rest
       .put(Routes.applicationGuildCommands(client.client_id, guild_id), {

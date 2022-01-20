@@ -1,14 +1,15 @@
 import { Client, Collection, Intents } from 'discord.js';
 import { ClientInitOptions } from 'types';
-import fs, { cp } from 'fs';
+import fs from 'fs';
 import command_handler from './handlers/command_handler';
 import interaction_handler from './handlers/interaction_handler';
 import event_handler from './handlers/event_handler';
 import { resolve } from 'path';
+import { SimpleCommand } from 'interfaces';
 
 export default class CustomClient extends Client {
   public commands_folder: string;
-  public commands: Collection<any, any>; /* TODO: proper type */
+  public commands: Collection<string, SimpleCommand>;
 
   public events_folder: string;
 
