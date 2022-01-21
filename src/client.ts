@@ -37,8 +37,6 @@ export default class CustomClient extends Client {
   public development_mode: boolean;
 
   /**
-   *
-   *
    * @param token {string} The bot's token
    * @param client_id {string} The bot's client id
    * @param options {ClientInitOptions} The client's options (optional)
@@ -46,10 +44,13 @@ export default class CustomClient extends Client {
   constructor(token: string, client_id: string, options?: ClientInitOptions) {
     super({
       intents: [options?.intents || Intents.FLAGS.GUILDS],
-    } as any);
+    });
 
     if (!token) throw new Error(`❌ No token provided!`);
     if (!client_id) throw new Error(`❌ No client id provided!`);
+
+    let path_injection =
+      process.env.PACKAGE_TESTING === 'true' ? '/../test/' : '../../../../src/';
 
     if (options?.guild_only && !options?.guild_id)
       throw new Error(
@@ -60,9 +61,6 @@ export default class CustomClient extends Client {
       (options?.development_mode || process.env.DEV === 'true') ?? false;
 
     if (this.development_mode) console.log('👷 Development mode enabled.');
-
-    let path_injection =
-      process.env.PACKAGE_TESTING === 'true' ? '/' : '../../../../src/';
 
     if (options?.home_folder) {
       path_injection += 'home_folder';

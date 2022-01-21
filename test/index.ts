@@ -6,12 +6,7 @@ dotenv.config();
 const client: SimpleClient = new SimpleClient(
   process.env.TOKEN as string,
   process.env.CLIENT_ID as string,
-  {
-    commands_folder: '../test/commands',
-    events_folder: '../test/events',
-
-    guild_id: process.env.GUILD_ID,
-  }
+  '/config.json'
 )
   .load_commands()
   .load_events();
