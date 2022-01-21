@@ -7,12 +7,21 @@ import event_handler from './handlers/event_handler';
 import { resolve } from 'path';
 import { SimpleCommand } from 'classes';
 
+/**
+ * A discord-simple.js client
+ *
+ * @class
+ * @extends Client
+ */
 export default class CustomClient extends Client {
   public commands_folder: string;
   public commands: Collection<string, SimpleCommand>;
 
   public events_folder: string;
 
+  /**
+   * Used for cooldowns
+   */
   public timestamps: Array<{
     user_id: string;
     command_name: string;
@@ -27,6 +36,13 @@ export default class CustomClient extends Client {
 
   public development_mode: boolean;
 
+  /**
+   *
+   *
+   * @param token {string} The bot's token
+   * @param client_id {string} The bot's client id
+   * @param options {ClientInitOptions} The client's options (optional)
+   */
   constructor(token: string, client_id: string, options?: ClientInitOptions) {
     super({
       intents: [options?.intents || Intents.FLAGS.GUILDS],
@@ -69,6 +85,12 @@ export default class CustomClient extends Client {
     this.guild_only = options?.guild_only ?? false;
   }
 
+  /**
+   * A function that loads all commands from the commands/ folder.
+   *  path can be changed using the client options.
+   *
+   * @returns {CustomClient} The client itself
+   */
   public load_commands = (): CustomClient => {
     if (!fs.existsSync(this.commands_folder))
       return this._folder_error(this.commands_folder);
@@ -90,6 +112,12 @@ export default class CustomClient extends Client {
     return this;
   };
 
+  /**
+   * A function that loads all events from the events/ folder.
+   *   path can be changed using the client options.
+   *
+   * @returns {CustomClient} The client itself
+   */
   public load_events = (): CustomClient => {
     if (!fs.existsSync(this.events_folder))
       return this._folder_error(this.events_folder);
@@ -99,7 +127,13 @@ export default class CustomClient extends Client {
     return this;
   };
 
-  _folder_error = (path: string) => {
+  /**
+   * A function that returns an error message when a folder is not found.
+   *
+   * @private
+   * @param path {string}
+   */
+  private _folder_error = (path: string) => {
     const folder = path.split('/')[path.split('/').length - 1];
 
     throw new Error(
@@ -107,8 +141,15 @@ export default class CustomClient extends Client {
     );
   };
 
+  /**
+   * Client.login() with a callback function.
+   *
+   * @param token {string | Function} - The bot's token (optional)
+   * @param cb {Function} - A callback function (optional)
+   * @returns {Promise<string>} - The bot's token
+   */
   public login = async (
-    token?: string,
+    token?: string | Function,
     cb: Function = () => console.log('\n🔓️  Bot has successfully logged in.')
   ): Promise<string> => {
     if (typeof token === 'function') {
