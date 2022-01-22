@@ -21,7 +21,7 @@ export default async (client: CustomClient, guild_id?: string) => {
 
   if (!command_files.length) return console.log('\n🙁 No commands found.');
 
-  for (const command_file of command_files) {
+  await command_files.forEach(async (command_file) => {
     const command =
       await new (require(`${client.commands_folder}/${command_file}`).default)();
 
@@ -56,7 +56,7 @@ export default async (client: CustomClient, guild_id?: string) => {
     }
 
     await client.commands.set(command.name, command);
-  }
+  });
 
   const commands = await client.commands.map((command: any) =>
     command._slash_command.toJSON()
@@ -109,9 +109,9 @@ function handle_option(command: any, option: any) {
       .setRequired(option.required || false);
 
     if (option.choices) {
-      for (const choice of option.choices) {
+      option.choices.forEach((choice: any) => {
         option_thingy.addChoice(choice.name, choice.value);
-      }
+      });
     }
 
     return option_thingy;

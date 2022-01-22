@@ -9,7 +9,7 @@ export default async (client: any) => {
     .readdirSync(client.events_folder)
     .filter((file) => file.endsWith('.event.ts'));
 
-  for (const event_file of event_files) {
+  await event_files.forEach(async (event_file) => {
     const event = await new (require(client.events_folder +
       '/' +
       event_file).default)();
@@ -29,7 +29,7 @@ export default async (client: any) => {
     } catch (e) {
       console.error(e);
     }
-  }
+  });
 
   await console.log(
     `\n✔️ Successfully registered ${number_of_events} application event/-s.`
