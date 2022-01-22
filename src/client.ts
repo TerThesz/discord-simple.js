@@ -3,7 +3,7 @@ import { ClientInitOptions } from 'types';
 import fs from 'fs';
 import { resolve } from 'path';
 import { SimpleCommand } from 'classes';
-import default_events_handler from './handlers/default_events_handler';
+import default_events_handler from './handlers/default_event_handler';
 import { Locale } from './types/client_init_options';
 
 /**
@@ -46,6 +46,9 @@ export default class CustomClient extends Client {
 
   public locale: Locale;
 
+  public anti_server_advertising: boolean;
+  public anti_server_advertising_regex: RegExp | undefined;
+
   /**
    * @param token {string} The bot's token
    * @param client_id {string} The bot's client id
@@ -56,8 +59,24 @@ export default class CustomClient extends Client {
       intents: options?.intents || [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_MESSAGES,
       ],
     });
+
+    const default_intents = [
+      Intents.FLAGS.GUILDS,
+      Intents.FLAGS.GUILD_MEMBERS,
+      Intents.FLAGS.GUILD_MESSAGES,
+    ];
+
+    if (
+      options?.intents &&
+      options.intents.filter((intent) => default_intents.includes(intent))
+        .length !== default_intents.length
+    )
+      console.log(
+        `🛑  Intents: ${default_intents} are required to run the bot.\n`
+      );
 
     if (!token) throw new Error(`❌ No token provided!`);
     if (!client_id) throw new Error(`❌ No client id provided!`);
@@ -109,6 +128,9 @@ export default class CustomClient extends Client {
       options?.welcomes_and_goodbyes
     )
       this.welcomes_and_goodbyes = true;
+
+    this.anti_server_advertising = options?.anti_server_advertising ?? false;
+    this.anti_server_advertising_regex = options?.anti_server_advertising_regex;
 
     default_events_handler(this);
   }

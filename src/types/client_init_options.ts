@@ -26,6 +26,9 @@ type ClientInitOptions = {
    *   @field %guild_id% - The guild's id
    */
   locale?: Locale;
+
+  anti_server_advertising?: boolean;
+  anti_server_advertising_regex?: RegExp;
 };
 
 export default ClientInitOptions;

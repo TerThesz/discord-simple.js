@@ -1,11 +1,14 @@
 import CustomClient from 'client';
-import { GuildMember, PartialGuildMember, TextChannel } from 'discord.js';
+import {
+  GuildMember,
+  Message,
+  PartialGuildMember,
+  TextChannel,
+} from 'discord.js';
 import { parse_locale } from '../utils';
 import command_handler from './command_handler';
 import event_handler from './event_handler';
 import interaction_handler from './interaction_handler';
-
-// I'll maybe add a REAL handler for these later.
 
 /**
  * A function that handles default package events.
@@ -34,6 +37,26 @@ export default (client: CustomClient) => {
 
     if (client._load_events) event_handler(client);
   });
+
+  if (client.anti_server_advertising) {
+    client.on('messageCreate', (message: Message) => {
+      if (
+        message.member?.id === message.guild?.ownerId ||
+        message.member?.permissions.has('ADMINISTRATOR')
+      )
+        return;
+
+      if (
+        message.content.match(
+          client.anti_server_advertising_regex ||
+            /(https?:\/\/)?(www.)?(discord.(gg|io|me|li)|discordapp.com\/invite)\/[^\s/]+?(?=\b)/
+        )
+      ) {
+        message.channel.send('🚫 Please do not advertise servers!');
+        message.delete();
+      }
+    });
+  }
 
   client.on('guildMemberAdd', (member: GuildMember) => {
     if (client.set_roles_on_join) {
