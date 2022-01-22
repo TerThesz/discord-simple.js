@@ -1,11 +1,9 @@
 import { Client, Collection, Intents } from 'discord.js';
 import { ClientInitOptions } from 'types';
 import fs from 'fs';
-import command_handler from './handlers/command_handler';
-import interaction_handler from './handlers/interaction_handler';
-import event_handler from './handlers/event_handler';
 import { resolve } from 'path';
 import { SimpleCommand } from 'classes';
+import default_events_handler from './handlers/default_events_handler';
 
 /**
  * A discord-simple.js client
@@ -36,6 +34,12 @@ export default class CustomClient extends Client {
 
   public development_mode: boolean;
 
+  public join_roles: Array<string> | undefined;
+  public set_roles_on_join: boolean;
+
+  _load_commands: boolean;
+  _load_events: boolean;
+
   /**
    * @param token {string} The bot's token
    * @param client_id {string} The bot's client id
@@ -43,7 +47,10 @@ export default class CustomClient extends Client {
    */
   constructor(token: string, client_id: string, options?: ClientInitOptions) {
     super({
-      intents: [options?.intents || Intents.FLAGS.GUILDS],
+      intents: options?.intents || [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MEMBERS,
+      ],
     });
 
     if (!token) throw new Error(`❌ No token provided!`);
@@ -81,6 +88,14 @@ export default class CustomClient extends Client {
 
     this.guild_id = options?.guild_id;
     this.guild_only = options?.guild_only ?? false;
+
+    this.join_roles = options?.join_roles;
+    if (!options?.set_roles_on_join && this.join_roles)
+      this.set_roles_on_join = true;
+
+    console.log(this.join_roles, this.set_roles_on_join);
+
+    default_events_handler(this);
   }
 
   /**
@@ -93,19 +108,7 @@ export default class CustomClient extends Client {
     if (!fs.existsSync(this.commands_folder))
       return this._folder_error(this.commands_folder);
 
-    this.once('ready', () =>
-      command_handler(
-        this,
-        this.guild_id === undefined
-          ? undefined
-          : this.development_mode || this.guild_only
-          ? this.guild_id
-          : undefined
-      )
-    );
-    this.on('interactionCreate', (interaction) =>
-      interaction_handler(interaction, this)
-    );
+    this._load_commands = true;
 
     return this;
   };
@@ -120,7 +123,7 @@ export default class CustomClient extends Client {
     if (!fs.existsSync(this.events_folder))
       return this._folder_error(this.events_folder);
 
-    this.once('ready', () => event_handler(this));
+    this._load_events = true;
 
     return this;
   };

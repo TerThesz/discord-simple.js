@@ -10,6 +10,9 @@ type ClientInitOptions = {
   development_mode?: boolean;
 
   home_folder?: string;
+
+  join_roles?: Array<string>;
+  set_roles_on_join?: boolean;
 };
 
 export default ClientInitOptions;
