@@ -4,6 +4,7 @@ import fs from 'fs';
 import { resolve } from 'path';
 import { SimpleCommand } from 'classes';
 import default_events_handler from './handlers/default_events_handler';
+import { Locale } from './types/client_init_options';
 
 /**
  * A discord-simple.js client
@@ -39,6 +40,11 @@ export default class CustomClient extends Client {
 
   _load_commands: boolean;
   _load_events: boolean;
+
+  public welcomes_and_goodbyes: boolean;
+  public welcome_channel_id: string | undefined;
+
+  public locale: Locale;
 
   /**
    * @param token {string} The bot's token
@@ -90,10 +96,19 @@ export default class CustomClient extends Client {
     this.guild_only = options?.guild_only ?? false;
 
     this.join_roles = options?.join_roles;
-    if (!options?.set_roles_on_join && this.join_roles)
+    if (
+      (options?.set_roles_on_join === undefined && this.join_roles) ||
+      options?.set_roles_on_join
+    )
       this.set_roles_on_join = true;
 
-    console.log(this.join_roles, this.set_roles_on_join);
+    this.welcome_channel_id = options?.welcome_channel_id;
+    if (
+      (options?.welcomes_and_goodbyes === undefined &&
+        this.welcome_channel_id) ||
+      options?.welcomes_and_goodbyes
+    )
+      this.welcomes_and_goodbyes = true;
 
     default_events_handler(this);
   }

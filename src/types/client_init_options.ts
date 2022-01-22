@@ -13,6 +13,26 @@ type ClientInitOptions = {
 
   join_roles?: Array<string>;
   set_roles_on_join?: boolean;
+
+  welcomes_and_goodbyes?: boolean;
+  welcome_channel_id?: string;
+
+  /**
+   *   @field %user% - The user's mention
+   *   @field %user_id% - The user's id
+   *   @field %user_name% - The user's name
+   *
+   *   @field %guild% - The guild's name
+   *   @field %guild_id% - The guild's id
+   */
+  locale?: Locale;
 };
 
 export default ClientInitOptions;
+export { Locale };
+
+type LocaleKeys = 'welcome_message' | 'goodbye_message';
+
+type Locale = {
+  [key in LocaleKeys]?: string;
+};

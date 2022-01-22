@@ -1,5 +1,6 @@
 import CustomClient from 'client';
-import { GuildMember } from 'discord.js';
+import { GuildMember, PartialGuildMember, TextChannel } from 'discord.js';
+import { parse_locale } from '../utils';
 import command_handler from './command_handler';
 import event_handler from './event_handler';
 import interaction_handler from './interaction_handler';
@@ -15,23 +16,11 @@ import interaction_handler from './interaction_handler';
  */
 export default (client: CustomClient) => {
   client.once('ready', () => {
-    if (client.set_roles_on_join) {
-      if (!client.join_roles) throw new Error('🚫 No join roles provided!');
+    if (client.set_roles_on_join && !client.join_roles)
+      throw new Error('🚫 No join roles provided!');
 
-      client.on('guildMemberAdd', (member: GuildMember) => {
-        try {
-          (client.join_roles as Array<string>).forEach((role) => {
-            member.roles.add(role);
-          });
-        } catch (error) {
-          console.log(error);
-
-          console.log(
-            "\n\nThe bot's role probably has a lover permission level than the role you want to add to a user or it is placed lower in the role hierarchy."
-          );
-        }
-      });
-    }
+    if (client.welcomes_and_goodbyes && !client.welcome_channel_id)
+      throw new Error('🚫 No welcome channel id provided!');
 
     if (client._load_commands)
       command_handler(
@@ -44,6 +33,59 @@ export default (client: CustomClient) => {
       );
 
     if (client._load_events) event_handler(client);
+  });
+
+  client.on('guildMemberAdd', (member: GuildMember) => {
+    if (client.set_roles_on_join) {
+      try {
+        (client.join_roles as Array<string>).forEach((role) => {
+          member.roles.add(role);
+        });
+      } catch (error) {
+        console.log(error);
+
+        console.log(
+          "\n\nThe bot's role probably has a lover permission level than the role you want to add to a user or it is placed lower in the role hierarchy."
+        );
+      }
+    }
+
+    if (client.welcomes_and_goodbyes) {
+      const channel = client.channels.cache.get(
+        client.welcome_channel_id as string
+      ) as TextChannel;
+
+      if (!channel) throw new Error('🚫 Welcome channel could not be found.');
+      channel.send(
+        parse_locale(
+          client.locale?.welcome_message ||
+            '👋 Welcome to **%guild%**, %user%!',
+          {
+            member,
+            guild: member.guild,
+          }
+        )
+      );
+    }
+  });
+
+  client.on('guildMemberRemove', (member: GuildMember | PartialGuildMember) => {
+    if (client.welcomes_and_goodbyes) {
+      const channel = client.channels.cache.get(
+        client.welcome_channel_id as string
+      ) as TextChannel;
+
+      if (!channel) throw new Error('🚫 Welcome channel could not be found.');
+      channel.send(
+        parse_locale(
+          client.locale?.goodbye_message || '😥 %user% just left us.',
+          {
+            member,
+            guild: member.guild,
+          }
+        ) || 'Error: No goodbye message provided.'
+      );
+    }
   });
 
   client.on('interactionCreate', (interaction) => {

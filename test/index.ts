@@ -6,7 +6,7 @@ dotenv.config();
 const client: SimpleClient = new SimpleClient(
   process.env.TOKEN as string,
   process.env.CLIENT_ID as string,
-  '/config.json'
+  '../test/config.json'
 )
   .load_commands()
   .load_events();
