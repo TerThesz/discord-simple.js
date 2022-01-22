@@ -4,7 +4,7 @@ import command_handler from './command_handler';
 import event_handler from './event_handler';
 import interaction_handler from './interaction_handler';
 
-// I'll maybe add a handler for these later.
+// I'll maybe add a REAL handler for these later.
 
 /**
  * A function that handles default package events.
