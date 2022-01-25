@@ -2,7 +2,7 @@ name: 🚀 publish
 
 on:
   workflow_run:
-    workflows: ['publish']
+    workflows: ['codeql-analysis']
     branches: [staging]
     types:
       - completed
