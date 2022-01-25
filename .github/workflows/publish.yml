@@ -3,7 +3,7 @@ name: 🚀 publish
 on:
   workflow_run:
     workflows: ['💂 CodeQL']
-    branches: [staging]
+    branches: [prod]
     types:
       - completed
     check_run:

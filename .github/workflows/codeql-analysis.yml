@@ -13,7 +13,7 @@ name: '💂 CodeQL'
 
 on:
   push:
-    branches: [staging]
+    branches: [prod]
 
 jobs:
   analyze:

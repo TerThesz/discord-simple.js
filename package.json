@@ -9,7 +9,7 @@
   ],
   "scripts": {
     "test": "PACKAGE_TESTING=true DEV=true nodemon --exec ts-node test/index.ts",
-    "merge": "git checkout staging && git pull origin dev && git push && git checkout dev",
+    "merge": "git checkout prod && git pull origin dev && git push && git checkout dev",
     "publish_package": "yarn build && npm publish",
     "build": "tsc",
     "postversion": "git push && yarn merge"
