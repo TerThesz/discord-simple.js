@@ -1,8 +1,3 @@
-### simple-discord.js
-
-readme coming soon
-
-<br/>
-
-
-# PACKAGE STILL IN DEVELOPMENT!!!!
+<p align="center">
+  <img width="80%" height="80%"  src="https://raw.githubusercontent.com/terthesz/discord-simple.js/f8d31717e42719b2746a14cbc45d361bfb703828/.github/images/package-logo-with-text.png" />
+</p>
