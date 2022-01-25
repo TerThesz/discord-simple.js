@@ -1,6 +1,6 @@
 {
   "name": "discord-simple.js",
-  "version": "1.8.7",
+  "version": "1.8.8",
   "description": "A simplified yet as powerful version of discord.js for faster bot development.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
