@@ -72,3 +72,7 @@ As you might have noticed, this library is not efficient for simple bots like th
 I made this package to help other developers (but mainly myself) to make discord bots faster without the need to copy and paste or google code all the time.
 
 This package uses the [discord.js](https://discord.js.org/) v13 library made by Discord.
+
+<br/>
+
+##### Note: This package is still in development. More changes will be made in the near future.
