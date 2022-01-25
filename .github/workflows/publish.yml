@@ -1,9 +1,14 @@
 name: 🚀 publish
 
 on:
-  push:
-    branches:
-      - staging
+  workflow_run:
+    workflows: ['publish']
+    branches: [staging]
+    types:
+      - completed
+    check_run:
+      types: [completed]
+      conclusion: [success]
 
 jobs:
   build:
@@ -14,8 +19,8 @@ jobs:
       - name: 📦️ node
         uses: actions/setup-node@v2
         with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
       - name: 🚀 publish package to npm
         run: yarn install && yarn publish_package
         env:
