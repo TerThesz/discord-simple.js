@@ -31,3 +31,42 @@ yarn add discord-simple.js
 <br/>
 
 other instructions can be found in the [documentation (coming soon)](https://google.com)
+
+## Example
+
+Here is an example of how to make a simple bot using this package:
+
+###### src/index.js
+
+```javascript
+const { SimpleClient } = require('discord-simple.js');
+
+const client = new SimpleClient('token', 'client_id').load_commands();
+
+// you can add your code here as you would in discord.js
+
+client.login();
+```
+
+###### src/commands/ping.js
+
+```javascript
+const { SimpleCommand } = require('discord-simple.js');
+
+module.exports = class PingCommand extends SimpleCommand {
+  name = 'ping';
+  description = 'Ping command';
+
+  async execute(interaction, client) {
+    interaction.reply('🏓 pong');
+  }
+};
+```
+
+As you might have noticed, this library is not efficient for simple bots like this. However, it introduces a great advantage when making a bigger and/or more complex bot.
+
+## About
+
+I made this package to help other developers (but mainly myself) to make discord bots faster without the need to copy and paste or google code all the time.
+
+This package uses the [discord.js](https://discord.js.org/) v13 library made by Discord.
