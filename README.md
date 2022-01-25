@@ -63,6 +63,8 @@ module.exports = class PingCommand extends SimpleCommand {
 };
 ```
 
+<br/>
+
 As you might have noticed, this library is not efficient for simple bots like this. However, it introduces a great advantage when making a bigger and/or more complex bot.
 
 ## About
