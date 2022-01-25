@@ -10,4 +10,6 @@
     <img src="https://img.shields.io/npm/v/discord-simple.js?label=discord-simple.js&style=flat-square" />
     <img src="https://img.shields.io/snyk/vulnerabilities/npm/discord-simple.js?style=flat-square" />
   </div>
+
+  <hr/>
 </p>
