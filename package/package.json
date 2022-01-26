@@ -12,7 +12,7 @@
     "merge": "git checkout prod && git pull origin dev && git push && git checkout dev",
     "publish_package": "yarn build && npm publish",
     "build": "tsc",
-    "postversion": "git push && yarn merge"
+    "postversion": "git add . && git commit -m \"⬆️ v$npm_package_version\" && git push && yarn merge"
   },
   "repository": {
     "type": "git",
