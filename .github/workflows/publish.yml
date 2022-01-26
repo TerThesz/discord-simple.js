@@ -21,6 +21,8 @@ jobs:
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
+      - name: 🚁 copy files
+        run: cp README.md package/README.md && cp LICENCE package/LICENCE
       - name: 🚀 publish package to npm
         working-directory: package/
         run: yarn install && yarn publish_package
