@@ -16,21 +16,11 @@ jobs:
     steps:
       - name: 📖 checkout
         uses: actions/checkout@v2
-      - name: ❓️ verify project changes
-        uses: tj-actions/verify-changed-files@v5.5
-        with:
-          files: |
-            package
-      - name: Display changed files
-        if: steps.changed_files.outputs.files_changed == 'false'
-        run: exit 1
       - name: 📦️ node
         uses: actions/setup-node@v2
         with:
           node-version: '16.x'
           registry-url: 'https://registry.npmjs.org'
-      - name: 🚁 copy files
-        run: cp README.md package/README.md && cp LICENCE package/LICENCE
       - name: 🚀 publish package to npm
         working-directory: package/
         run: yarn install && yarn publish_package

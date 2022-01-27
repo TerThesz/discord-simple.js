@@ -15,19 +15,18 @@ export default async (client: CustomClient, guild_id?: string) => {
 
   await console.log('\n🤔 Loading commands...');
 
-  const command_files = await fs
-    .readdirSync(client.commands_folder)
-    .filter((file) => file.endsWith('command.ts') || file.endsWith('.ts'));
+  const command_files = await fs.readdirSync(client.commands_folder).filter((file) => file.endsWith('command.ts') || file.endsWith('.ts'));
 
   if (!command_files.length) return console.log('\n🙁 No commands found.');
 
   await command_files.forEach(async (command_file) => {
-    const command =
-      await new (require(`${client.commands_folder}/${command_file}`).default)();
+    let command = await require(`${client.commands_folder}/${command_file}`);
+    if (command.default) command = command.default;
+    command = await new command();
 
-    await command._slash_command
-      .setName(command.name)
-      .setDescription(command.description);
+    console.log(client.guild_id);
+
+    await command._slash_command.setName(command.name).setDescription(command.description);
 
     if (command.options) {
       for (const option of command.options) {
@@ -37,43 +36,41 @@ export default async (client: CustomClient, guild_id?: string) => {
 
     if (command.subcommands) {
       for (const subcommand of command.subcommands) {
-        await command._slash_command.addSubcommand(
-          (subcommand_builder: any) => {
-            subcommand_builder
-              .setName(subcommand.name)
-              .setDescription(subcommand.description);
+        await command._slash_command.addSubcommand((subcommand_builder: any) => {
+          subcommand_builder.setName(subcommand.name).setDescription(subcommand.description);
 
-            if (subcommand.options) {
-              for (const option of subcommand.options) {
-                handle_option(subcommand_builder, option);
-              }
+          if (subcommand.options) {
+            for (const option of subcommand.options) {
+              handle_option(subcommand_builder, option);
             }
-
-            return subcommand_builder;
           }
-        );
+
+          return subcommand_builder;
+        });
       }
     }
 
     await client.commands.set(command.name, command);
   });
 
-  const commands = await client.commands.map((command: any) =>
-    command._slash_command.toJSON()
-  );
+  const commands = await client.commands.map((command: any) => command._slash_command.toJSON());
 
   const rest = await new REST({ version: '9' }).setToken(client.token);
+
+  if (client.development_mode && !client.guild_id) {
+    console.log(
+      '\n⏲️  Commands will start loading in 5 seconds...\n  If you want to disable this, set the guild_id in the client.json file or turn off development mode.'
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 5000));
+  }
 
   if (guild_id) {
     rest
       .put(Routes.applicationGuildCommands(client.client_id, guild_id), {
         body: commands,
       })
-      .then(() =>
-        console.log(
-          `\n✔️ Successfully registered ${client.commands.size} guild command/-s.`
-        )
-      )
+      .then((prd) => /* console.log(`\n✔️ Successfully registered ${client.commands.size} guild command/-s.`) */ console.log(prd))
       .catch(console.error);
 
     return;
@@ -83,11 +80,7 @@ export default async (client: CustomClient, guild_id?: string) => {
     .put(Routes.applicationCommands(client.client_id), {
       body: commands,
     })
-    .then(() =>
-      console.log(
-        `\n✔️ Successfully registered ${client.commands.size} application command/-s.`
-      )
-    )
+    .then(() => console.log(`\n✔️ Successfully registered ${client.commands.size} application command/-s.`))
     .catch(console.error);
 };
 

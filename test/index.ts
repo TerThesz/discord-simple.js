@@ -7,9 +7,7 @@ const client: SimpleClient = new SimpleClient(
   process.env.TOKEN as string,
   process.env.CLIENT_ID as string,
   '../test/config.json'
-)
-  .load_commands()
-  .load_events();
+).load_commands();
 
 client.once('ready', () => {
   if (!client.user) return;

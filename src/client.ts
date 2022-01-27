@@ -56,57 +56,39 @@ export default class CustomClient extends Client {
    */
   constructor(token: string, client_id: string, options?: ClientInitOptions) {
     super({
-      intents: options?.intents || [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MEMBERS,
-        Intents.FLAGS.GUILD_MESSAGES,
-      ],
+      intents: options?.intents || [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES],
     });
 
-    const default_intents = [
-      Intents.FLAGS.GUILDS,
-      Intents.FLAGS.GUILD_MEMBERS,
-      Intents.FLAGS.GUILD_MESSAGES,
-    ];
+    const default_intents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES];
 
-    if (
-      options?.intents &&
-      options.intents.filter((intent) => default_intents.includes(intent))
-        .length !== default_intents.length
-    )
-      console.log(
-        `🛑  Intents: ${default_intents} are required to run the bot.\n`
-      );
+    if (options?.intents && options.intents.filter((intent) => default_intents.includes(intent)).length !== default_intents.length)
+      console.log(`🛑  Intents: ${default_intents} are required to run the bot.\n`);
 
     if (!token) throw new Error(`❌ No token provided!`);
     if (!client_id) throw new Error(`❌ No client id provided!`);
 
-    let path_injection =
-      process.env.PACKAGE_TESTING === 'true' ? '/../test/' : '../../../../src/';
+    let path_injection = process.env.PACKAGE_TESTING === 'true' ? '/../test/' : '../../../../src/';
 
-    if (options?.guild_only && !options?.guild_id)
-      throw new Error(
-        '🆔 You need to provide a guild id when using guild only mode.'
+    if (options?.guild_only && !options?.guild_id) throw new Error('🆔 You need to provide a guild id when using guild only mode.');
+
+    this.development_mode = (options?.development_mode || process.env.DEV === 'true') ?? false;
+
+    if (this.development_mode) console.log('👷 Development mode enabled.\n');
+    if (this.development_mode && !options?.guild_id) {
+      console.warn(
+        '⚠️ You are running the bot in development mode without providing a guild id.\n' +
+          'This means that all commands will registered application wide.\n'
       );
-
-    this.development_mode =
-      (options?.development_mode || process.env.DEV === 'true') ?? false;
-
-    if (this.development_mode) console.log('👷 Development mode enabled.');
+    }
 
     if (options?.home_folder) {
       path_injection += 'home_folder';
 
-      if (path_injection[path_injection.length - 1] !== '/')
-        path_injection += '/';
+      if (path_injection[path_injection.length - 1] !== '/') path_injection += '/';
     }
 
-    this.commands_folder = resolve(
-      __dirname + path_injection + (options?.commands_folder || 'commands')
-    );
-    this.events_folder = resolve(
-      __dirname + path_injection + (options?.events_folder || 'events')
-    );
+    this.commands_folder = resolve(__dirname + path_injection + (options?.commands_folder || 'commands'));
+    this.events_folder = resolve(__dirname + path_injection + (options?.events_folder || 'events'));
 
     this.token = token;
     this.client_id = client_id;
@@ -115,18 +97,10 @@ export default class CustomClient extends Client {
     this.guild_only = options?.guild_only ?? false;
 
     this.join_roles = options?.join_roles;
-    if (
-      (options?.set_roles_on_join === undefined && this.join_roles) ||
-      options?.set_roles_on_join
-    )
-      this.set_roles_on_join = true;
+    if ((options?.set_roles_on_join === undefined && this.join_roles) || options?.set_roles_on_join) this.set_roles_on_join = true;
 
     this.welcome_channel_id = options?.welcome_channel_id;
-    if (
-      (options?.welcomes_and_goodbyes === undefined &&
-        this.welcome_channel_id) ||
-      options?.welcomes_and_goodbyes
-    )
+    if ((options?.welcomes_and_goodbyes === undefined && this.welcome_channel_id) || options?.welcomes_and_goodbyes)
       this.welcomes_and_goodbyes = true;
 
     this.anti_server_advertising = options?.anti_server_advertising ?? false;
@@ -142,8 +116,7 @@ export default class CustomClient extends Client {
    * @returns {CustomClient} The client itself
    */
   public load_commands = (): CustomClient => {
-    if (!fs.existsSync(this.commands_folder))
-      return this._folder_error(this.commands_folder);
+    if (!fs.existsSync(this.commands_folder)) return this._folder_error(this.commands_folder);
 
     this._load_commands = true;
 
@@ -157,8 +130,7 @@ export default class CustomClient extends Client {
    * @returns {CustomClient} The client itself
    */
   public load_events = (): CustomClient => {
-    if (!fs.existsSync(this.events_folder))
-      return this._folder_error(this.events_folder);
+    if (!fs.existsSync(this.events_folder)) return this._folder_error(this.events_folder);
 
     this._load_events = true;
 

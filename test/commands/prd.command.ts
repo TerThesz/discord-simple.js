@@ -1,8 +1,7 @@
-import { CommandInteraction } from 'discord.js';
 import { SimpleClient, SimpleCommand } from '../../src';
 
 export default class PrdCommand extends SimpleCommand {
-  name = 'prd';
+  name = 'oklahoma';
   description = 'Prints the current date and time. (not really)';
 
   global_cooldown = 20;
@@ -18,7 +17,7 @@ export default class PrdCommand extends SimpleCommand {
   ];
   use_without_permission = true;
 
-  async execute(interaction: CommandInteraction, client: SimpleClient) {
+  async execute(interaction: any, client: SimpleClient) {
     await interaction.reply('cauko');
 
     client.user?.setActivity('cauko', { type: 'WATCHING' });
