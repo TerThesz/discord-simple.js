@@ -24,8 +24,6 @@ export default async (client: CustomClient, guild_id?: string) => {
     if (command.default) command = command.default;
     command = await new command();
 
-    console.log(client.guild_id);
-
     await command._slash_command.setName(command.name).setDescription(command.description);
 
     if (command.options) {
@@ -70,7 +68,7 @@ export default async (client: CustomClient, guild_id?: string) => {
       .put(Routes.applicationGuildCommands(client.client_id, guild_id), {
         body: commands,
       })
-      .then((prd) => /* console.log(`\n✔️ Successfully registered ${client.commands.size} guild command/-s.`) */ console.log(prd))
+      .then(() => console.log(`\n✔️ Successfully registered ${client.commands.size} guild command/-s.`))
       .catch(console.error);
 
     return;
