@@ -1,7 +1,7 @@
 import { SimpleClient, SimpleCommand } from '../../src';
 
 export default class PrdCommand extends SimpleCommand {
-  name = 'oklahoma';
+  name = 'jano';
   description = 'Prints the current date and time. (not really)';
 
   global_cooldown = 20;
