@@ -52,4 +52,5 @@ type Dashboard = {
   allowed_addresses?: Array<string>;
 
   custom_driver_path?: string;
+  storage_path_for_json_driver?: string;
 };

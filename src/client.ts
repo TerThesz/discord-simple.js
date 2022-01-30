@@ -2,9 +2,10 @@ import { Client, Collection, Intents } from 'discord.js';
 import { ClientInitOptions } from 'types';
 import fs from 'fs';
 import { resolve } from 'path';
-import { SimpleCommand } from 'classes';
+import { SimpleCommand, SimpleDriver } from 'classes';
 import default_events_handler from './handlers/default_event_handler';
 import { Dashboard, Locale } from './types/client_init_options';
+import { JsonDriver } from './drivers';
 
 /**
  * A discord-simple.js client
@@ -52,6 +53,12 @@ export default class CustomClient extends Client {
 
   public dashboard: Dashboard | undefined;
 
+  path_injection: string;
+
+  public driver: SimpleDriver;
+
+  client_path: string;
+
   /**
    * @param token {string} The bot's token
    * @param client_id {string} The bot's client id
@@ -62,6 +69,8 @@ export default class CustomClient extends Client {
       intents: options?.intents || [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES],
     });
 
+    this.client_path = __dirname;
+
     const default_intents = [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_MESSAGES];
 
     if (options?.intents && options.intents.filter((intent) => default_intents.includes(intent)).length !== default_intents.length)
@@ -70,7 +79,7 @@ export default class CustomClient extends Client {
     if (!token) throw new Error(`❌ No token provided!`);
     if (!client_id) throw new Error(`❌ No client id provided!`);
 
-    let path_injection = process.env.PACKAGE_TESTING === 'true' ? '/../test/' : '../../../../src/';
+    this.path_injection = process.env.PACKAGE_TESTING === 'true' ? '/../test/' : '../../../../src/';
 
     if (options?.guild_only && !options?.guild_id) throw new Error('🆔 You need to provide a guild id when using guild only mode.');
 
@@ -85,13 +94,13 @@ export default class CustomClient extends Client {
     }
 
     if (options?.home_folder) {
-      path_injection += 'home_folder';
+      this.path_injection += 'home_folder';
 
-      if (path_injection[path_injection.length - 1] !== '/') path_injection += '/';
+      if (this.path_injection[this.path_injection.length - 1] !== '/') this.path_injection += '/';
     }
 
-    this.commands_folder = resolve(__dirname + path_injection + (options?.commands_folder || 'commands'));
-    this.events_folder = resolve(__dirname + path_injection + (options?.events_folder || 'events'));
+    this.commands_folder = resolve(__dirname + this.path_injection + (options?.commands_folder || 'commands'));
+    this.events_folder = resolve(__dirname + this.path_injection + (options?.events_folder || 'events'));
 
     this.token = token;
     this.client_id = client_id;
@@ -114,7 +123,7 @@ export default class CustomClient extends Client {
       if (this.dashboard.driver === 'custom') {
         if (!this.dashboard.custom_driver_path) throw new Error('⛔️ Dashboard: No custom driver path provided!\n');
 
-        this.dashboard.custom_driver_path = resolve(__dirname + path_injection + this.dashboard.custom_driver_path);
+        this.dashboard.custom_driver_path = resolve(__dirname + this.path_injection + this.dashboard.custom_driver_path);
 
         if (
           !['ts', 'js', 'driver.ts', 'driver.js'].find(
@@ -125,6 +134,17 @@ export default class CustomClient extends Client {
 
         if (!fs.existsSync(this.dashboard.custom_driver_path))
           return this._folder_error(this.dashboard.custom_driver_path, 'dashboard.custom_driver_path');
+
+        this.driver = require(this.dashboard.custom_driver_path + '').default || require(this.dashboard.custom_driver_path + '');
+      }
+
+      if (options?.dashboard?.driver === 'json') {
+        if (!this.dashboard.storage_path_for_json_driver)
+          throw new Error(
+            '⛔️ Dashboard: No storage path provided for json driver! You can set it using options.dashboard.storage_path_for_json_driver. Or with options.home_folder\n'
+          );
+
+        this.driver = new JsonDriver(this.dashboard.storage_path_for_json_driver, this);
       }
 
       if (!this.dashboard.driver) throw new Error('⛔️ Dashboard: No driver provided!\n');
@@ -177,12 +197,12 @@ export default class CustomClient extends Client {
    * @private
    * @param path {string}
    */
-  private _folder_error = (path: string, option?: string) => {
+  _folder_error = (path: string, option?: string) => {
     const folder = path.split('/')[path.split('/').length - 1];
 
     throw new Error(
       `📁 ${folder} folder doesn't exist.\n  You can change the default path of this folder with ${option || 'options.' + folder}${
-        option ? 'é' : ' or with options.home_folder'
+        option ? '' : ' or with options.home_folder'
       }.\n\ncurrent path: ${path}`
     );
   };
