@@ -12,6 +12,12 @@
   "dashboard": {
     "enabled": true,
     "driver": "json",
-    "storage_path_for_json_driver": "storage"
+    "storage_path_for_json_driver": "storage",
+
+    "enable_rest_api": true,
+
+    "allowed_addresses": [
+      "127.0.0.1"
+    ]
   }
 }
