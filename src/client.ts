@@ -4,7 +4,7 @@ import fs from 'fs';
 import { resolve } from 'path';
 import { SimpleCommand } from 'classes';
 import default_events_handler from './handlers/default_event_handler';
-import { Locale } from './types/client_init_options';
+import { Dashboard, Locale } from './types/client_init_options';
 
 /**
  * A discord-simple.js client
@@ -44,10 +44,13 @@ export default class CustomClient extends Client {
   public welcomes_and_goodbyes: boolean;
   public welcome_channel_id: string | undefined;
 
+  // TODO: Add more options
   public locale: Locale;
 
   public anti_server_advertising: boolean;
   public anti_server_advertising_regex: RegExp | undefined;
+
+  public dashboard: Dashboard | undefined;
 
   /**
    * @param token {string} The bot's token
@@ -106,6 +109,37 @@ export default class CustomClient extends Client {
     this.anti_server_advertising = options?.anti_server_advertising ?? false;
     this.anti_server_advertising_regex = options?.anti_server_advertising_regex;
 
+    this.dashboard = options?.dashboard;
+    if (this.dashboard && this.dashboard.enabled) {
+      if (this.dashboard.driver === 'custom') {
+        if (!this.dashboard.custom_driver_path) throw new Error('⛔️ Dashboard: No custom driver path provided!\n');
+
+        this.dashboard.custom_driver_path = resolve(__dirname + path_injection + this.dashboard.custom_driver_path);
+
+        if (
+          !['ts', 'js', 'driver.ts', 'driver.js'].find(
+            (ext) => ext === this.dashboard?.custom_driver_path?.split('.')[this.dashboard.custom_driver_path.split('.').length - 1]
+          )
+        )
+          throw new Error('⛔️ Dashboard: Unsupported driver extension! Only .ts, .js, driver.ts and driver.js are supported.\n');
+
+        if (!fs.existsSync(this.dashboard.custom_driver_path))
+          return this._folder_error(this.dashboard.custom_driver_path, 'dashboard.custom_driver_path');
+      }
+
+      if (!this.dashboard.driver) throw new Error('⛔️ Dashboard: No driver provided!\n');
+
+      if (this.dashboard.whitelist === false) console.log('⚠️ Dashboard: Whitelist turned off. This is not recommended.\n');
+      if (this.dashboard.whitelist === undefined) {
+        this.dashboard.whitelist = true;
+        console.log('⚠️ Dashboard: Whitelist turned on by default.\n');
+      }
+      if (this.dashboard.whitelist && !this.dashboard.allowed_addresses) {
+        this.dashboard.allowed_addresses = [];
+        console.log('⚠️ Dashboard: No allowed addresses provided.\n');
+      }
+    }
+
     default_events_handler(this);
   }
 
@@ -143,11 +177,13 @@ export default class CustomClient extends Client {
    * @private
    * @param path {string}
    */
-  private _folder_error = (path: string) => {
+  private _folder_error = (path: string, option?: string) => {
     const folder = path.split('/')[path.split('/').length - 1];
 
     throw new Error(
-      `📁 ${folder} folder doesn't exist.\n  You can change the default path of this folder with options.${folder} or with options.home_folder.\n\ncurrent path: ${path}`
+      `📁 ${folder} folder doesn't exist.\n  You can change the default path of this folder with ${option || 'options.' + folder}${
+        option ? 'é' : ' or with options.home_folder'
+      }.\n\ncurrent path: ${path}`
     );
   };
 

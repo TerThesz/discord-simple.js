@@ -29,13 +29,27 @@ type ClientInitOptions = {
 
   anti_server_advertising?: boolean;
   anti_server_advertising_regex?: RegExp;
+
+  dashboard?: Dashboard;
 };
 
 export default ClientInitOptions;
-export { Locale };
+export { Locale, Dashboard };
 
 type LocaleKeys = 'welcome_message' | 'goodbye_message';
 
 type Locale = {
   [key in LocaleKeys]?: string;
+};
+
+type DashboardDriver = 'json' | 'mongodb' | 'custom';
+
+type Dashboard = {
+  enabled: boolean;
+  driver: DashboardDriver;
+
+  whitelist?: boolean;
+  allowed_addresses?: Array<string>;
+
+  custom_driver_path?: string;
 };
