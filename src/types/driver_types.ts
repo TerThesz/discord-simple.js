@@ -8,7 +8,7 @@ type EntryInfo = {
   client: SimpleClient;
   guild_id: string;
 
-  option: {
+  option?: {
     key: string;
     value?: any;
   };

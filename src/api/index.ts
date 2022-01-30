@@ -1,6 +1,8 @@
 import * as http from 'http';
 import { SimpleClient } from 'index';
+import { SimpleRequest } from 'interfaces';
 import { AddressInfo } from 'net';
+import option from './option';
 
 export default class RestApi extends http.Server {
   public port: number;
@@ -19,19 +21,29 @@ export default class RestApi extends http.Server {
     this.on('request', this.handle_request);
   }
 
-  handle_request(req: http.IncomingMessage, res: http.ServerResponse) {
+  handle_request(req: SimpleRequest, res: http.ServerResponse) {
     if (
       this.client.dashboard?.whitelist &&
       !this.client.dashboard.allowed_addresses?.find((addr) => addr === (req.socket.address() as AddressInfo).address)
-    ) {
-      res.writeHead(403);
-      res.end();
+    )
+      return res.writeHead(403).end();
 
-      return;
-    }
+    if (!req.url) return res.writeHead(404).end();
 
-    res.write('hello!');
-    res.end();
+    const url_parts = req.url.split('?');
+    req.client = this.client;
+    req.uri = url_parts[0];
+    req.query = {};
+
+    url_parts[1]?.split('&').forEach((query) => {
+      const query_parts = query.split('=');
+
+      req.query[query_parts[0]] = query_parts[1];
+    });
+
+    if (req.uri === '/option') option(req, res);
+
+    return;
   }
 
   public start(cb: Function = () => {}) {

@@ -1,3 +1,4 @@
 import SimpleEvent from './event';
+import SimpleRequest from './request';
 
-export { SimpleEvent };
+export { SimpleEvent, SimpleRequest };
