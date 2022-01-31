@@ -15,11 +15,13 @@ export default class SimpleCache {
     if (!this._cache_data[guild_id]) this._cache_data[guild_id] = {};
     this._cache_data[guild_id][key] = value;
 
-    setTimeout(() => {
-      delete this._cache_data[guild_id][key];
+    if (this.cache_timeout) {
+      setTimeout(() => {
+        delete this._cache_data[guild_id][key];
 
-      if (Object.keys(this._cache_data[guild_id]).length === 0) delete this._cache_data[guild_id];
-    }, this.cache_timeout * 1000);
+        if (Object.keys(this._cache_data[guild_id]).length === 0) delete this._cache_data[guild_id];
+      }, this.cache_timeout * 1000);
+    }
   }
 
   public get(guild_id: string, key: string): any {

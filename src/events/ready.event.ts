@@ -17,6 +17,6 @@ export default class ReadyEvent implements SimpleEvent {
         client.guild_id === undefined ? undefined : client.development_mode || client.guild_only ? client.guild_id : undefined
       );
 
-    if (client._load_events) event_handler(client);
+    event_handler(client);
   }
 }

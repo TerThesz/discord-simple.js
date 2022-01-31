@@ -12,7 +12,7 @@ export default abstract class Driver {
 
   public abstract get_guild_owner_id(entry_info: EntryInfo): Promise<string | undefined> | (string | undefined);
 
-  public abstract create_guild_entry(entry_info: EntryInfo, guild_owner: string): Promise<boolean> | boolean;
-  public abstract delete_guild_entry(entry_info: EntryInfo): Promise<boolean> | boolean;
-  public abstract guild_entry_exists(entry_info: EntryInfo): Promise<boolean> | boolean;
+  public abstract create_guild_entry(guild_id: string): Promise<boolean> | boolean;
+  public abstract delete_guild_entry(guild_id: string): Promise<boolean> | boolean;
+  public abstract guild_entry_exists(guild_id: string): Promise<boolean> | boolean;
 }

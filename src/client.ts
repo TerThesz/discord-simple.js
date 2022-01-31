@@ -3,7 +3,6 @@ import { ClientInitOptions } from 'types';
 import fs from 'fs';
 import { resolve } from 'path';
 import { SimpleCommand, SimpleDriver } from 'classes';
-import default_events_handler from './handlers/default_event_handler';
 import { Dashboard, Locale } from './types/client_init_options';
 import { JsonDriver } from './drivers';
 
@@ -162,8 +161,6 @@ export default class CustomClient extends Client {
       this.dashboard.use_cache = options?.dashboard?.use_cache ?? true;
       this.dashboard.cache_timeout = options?.dashboard?.cache_timeout ?? 600;
     }
-
-    default_events_handler(this);
   }
 
   /**

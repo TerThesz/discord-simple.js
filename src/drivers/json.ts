@@ -114,14 +114,14 @@ export default class JsonDriver extends SimpleDriver {
   private _get_file(entry_info: EntryInfo): string | undefined {
     const path = this.path + '/' + entry_info.guild_id + '.json';
 
-    if (!this.guild_entry_exists(entry_info)) return;
+    if (!this.guild_entry_exists(entry_info.guild_id)) return;
 
     return path;
   }
 
-  public create_guild_entry(entry_info: EntryInfo, guild_owner: string): boolean {
+  public create_guild_entry(guild_id: string): boolean {
     try {
-      fs.writeFileSync(this.path + '/' + entry_info.guild_id + '.json', '{}');
+      fs.writeFileSync(this.path + '/' + guild_id + '.json', '{}');
 
       return true;
     } catch (err: any) {
@@ -131,9 +131,9 @@ export default class JsonDriver extends SimpleDriver {
     }
   }
 
-  public delete_guild_entry(entry_info: EntryInfo): boolean {
+  public delete_guild_entry(guild_id: string): boolean {
     try {
-      fs.unlinkSync(this.path + '/' + entry_info.guild_id + '.json');
+      fs.unlinkSync(this.path + '/' + guild_id + '.json');
 
       return true;
     } catch (err: any) {
@@ -143,9 +143,9 @@ export default class JsonDriver extends SimpleDriver {
     }
   }
 
-  public guild_entry_exists(entry_info: EntryInfo): boolean {
+  public guild_entry_exists(guild_id: string): boolean {
     try {
-      return fs.existsSync(this.path + '/' + entry_info.guild_id + '.json');
+      return fs.existsSync(this.path + '/' + guild_id + '.json');
     } catch (err: any) {
       console.error('😭' + err + '\n');
 

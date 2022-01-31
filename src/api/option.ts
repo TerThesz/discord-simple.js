@@ -64,13 +64,7 @@ export default async function option(req: SimpleRequest, res: ServerResponse) {
 
     if (!(await auth(req, res))) return;
 
-    if (
-      !driver.guild_entry_exists({
-        guild_id: guild_id,
-        client: req.client,
-      })
-    )
-      return error(404, "Guild doesn't have an error.");
+    if (!driver.guild_entry_exists(guild_id)) return error(404, "Guild doesn't have an error.");
 
     if (!options || options.toLowerCase() === 'all' || options === '*')
       return res.end(
@@ -101,13 +95,7 @@ export default async function option(req: SimpleRequest, res: ServerResponse) {
 
     if (!(await auth(req, res))) return;
 
-    if (
-      !driver.guild_entry_exists({
-        guild_id: guild_id,
-        client: req.client,
-      })
-    )
-      return error(404, "Guild doesn't have an error.");
+    if (!driver.guild_entry_exists(guild_id)) return error(404, "Guild doesn't have an error.");
 
     const entry = {
       client: req.client,
