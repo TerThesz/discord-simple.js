@@ -1,8 +1,6 @@
 import { SimpleClient } from 'index';
 
-type EntryData = {
-  [key: string]: any;
-};
+type EntryData = any;
 
 type EntryInfo = {
   client: SimpleClient;

@@ -45,7 +45,14 @@ export default class JsonDriver extends SimpleDriver {
       const file_data = fs.readFileSync(file_path, 'utf8');
       const file_json = JSON.parse(file_data);
 
-      return file_json[entry_info.option?.key + ''];
+      try {
+        const output = JSON.parse(file_json[entry_info.option?.key + '']);
+        if (output === undefined) throw new Error('🙄');
+
+        return output;
+      } catch (err: any) {
+        return file_json[entry_info.option?.key + ''];
+      }
     } catch (err: any) {
       console.error('😭' + err + '\n');
 
