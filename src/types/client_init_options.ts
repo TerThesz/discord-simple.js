@@ -31,10 +31,12 @@ type ClientInitOptions = {
   anti_server_advertising_regex?: RegExp;
 
   dashboard?: Dashboard;
+
+  presence?: Presence;
 };
 
 export default ClientInitOptions;
-export { Locale, Dashboard };
+export { Locale, Dashboard, Presence };
 
 type LocaleKeys = 'welcome_message' | 'goodbye_message';
 
@@ -59,4 +61,14 @@ type Dashboard = {
 
   enable_rest_api?: boolean;
   rest_api_port?: number;
+};
+
+type Presence = {
+  status: 'online' | 'idle' | 'dnd' | 'invisible';
+  activities?: Array<{
+    content: string;
+    type: 'PLAYING' | 'STREAMING' | 'LISTENING' | 'WATCHING';
+  }>;
+
+  activities_interval?: number;
 };

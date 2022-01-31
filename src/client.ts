@@ -3,8 +3,9 @@ import { ClientInitOptions } from 'types';
 import fs from 'fs';
 import { resolve } from 'path';
 import { SimpleCommand, SimpleDriver } from 'classes';
-import { Dashboard, Locale } from './types/client_init_options';
+import { Dashboard, Locale, Presence } from './types/client_init_options';
 import { JsonDriver } from './drivers';
+import event_handler from './handlers/event_handler';
 
 /**
  * A discord-simple.js client
@@ -57,6 +58,8 @@ export default class CustomClient extends Client {
   public driver: SimpleDriver;
 
   client_path: string;
+
+  public client_presence: Presence | undefined;
 
   /**
    * @param token {string} The bot's token
@@ -161,6 +164,10 @@ export default class CustomClient extends Client {
       this.dashboard.use_cache = options?.dashboard?.use_cache ?? true;
       this.dashboard.cache_timeout = options?.dashboard?.cache_timeout ?? 600;
     }
+
+    this.client_presence = options?.presence;
+
+    event_handler(this);
   }
 
   /**

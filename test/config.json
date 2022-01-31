@@ -17,5 +17,25 @@
     "allowed_addresses": [
       "127.0.0.1"
     ]
+  },
+
+  "presence": {
+    "status": "online",
+    "activities": [
+      {
+        "content": "with the bot",
+        "type": "WATCHING"
+      },
+      {
+        "content": "for the server",
+        "type": "PLAYING"
+      },
+      {
+        "content": "with the bot",
+        "type": "WATCHING"
+      }
+    ],
+
+    "activities_interval": 20
   }
 }
