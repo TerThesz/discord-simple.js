@@ -3,11 +3,13 @@ import { EntryInfo, EntryData } from '../types';
 import * as fs from 'fs';
 import { SimpleClient } from '../index';
 import { resolve } from 'path';
+import SimpleCache from '../lib/cache';
 
 // FIXME: poopy code :(
 
 export default class JsonDriver extends SimpleDriver {
   public path: string;
+  private _cache: SimpleCache;
 
   public constructor(path: string, client: SimpleClient) {
     super();
@@ -15,6 +17,8 @@ export default class JsonDriver extends SimpleDriver {
     this.path = resolve(client.client_path + client.path_injection + path);
 
     if (!fs.existsSync(this.path)) return client._folder_error(this.path, ' \r');
+
+    this._cache = new SimpleCache(client.dashboard?.cache_timeout || 600);
   }
 
   public add_entry(entry_info: EntryInfo): boolean {
@@ -28,6 +32,8 @@ export default class JsonDriver extends SimpleDriver {
       file_json[entry_info.option?.key + ''] = entry_info.option?.value + '';
 
       fs.writeFileSync(file_path, JSON.stringify(file_json, null, 2));
+
+      this._cache.add(entry_info.guild_id, entry_info.option?.key + '', entry_info.option?.value + '');
     } catch (err: any) {
       console.error('😭' + err + '\n');
 
@@ -38,6 +44,9 @@ export default class JsonDriver extends SimpleDriver {
   }
 
   public get_entry(entry_info: EntryInfo): EntryData | undefined {
+    const cached_value = this._cache.get(entry_info.guild_id, entry_info.option?.key + '');
+    if (cached_value) return cached_value;
+
     try {
       const file_path = this._get_file(entry_info);
       if (!file_path) return;
@@ -87,6 +96,8 @@ export default class JsonDriver extends SimpleDriver {
       delete file_json[entry_info.option?.key + ''];
 
       fs.writeFileSync(file_path, JSON.stringify(file_json, null, 2));
+
+      this._cache.delete(entry_info.guild_id, entry_info.option?.key + '');
     } catch (err: any) {
       console.error('😭' + err + '\n');
 

@@ -2,7 +2,7 @@ import { CommandInteraction, GuildMember } from 'discord.js';
 import { SimpleClient, SimpleCommand } from '../../src';
 
 export default class PrdCommand extends SimpleCommand {
-  name = 'jano';
+  name = 'jan1o';
   description = 'Prints the current date and time. (not really)';
 
   async execute(interaction: CommandInteraction, client: SimpleClient) {

@@ -158,6 +158,9 @@ export default class CustomClient extends Client {
         this.dashboard.allowed_addresses = [];
         console.log('⚠️ Dashboard: No allowed addresses provided.\n');
       }
+
+      this.dashboard.use_cache = options?.dashboard?.use_cache ?? true;
+      this.dashboard.cache_timeout = options?.dashboard?.cache_timeout ?? 600;
     }
 
     default_events_handler(this);

@@ -13,6 +13,8 @@ import interaction_handler from './interaction_handler';
  *
  * @param client {CustomClient} The client itself
  */
+
+// TODO: move all events to events/
 export default (client: CustomClient) => {
   const dashboard_enabled = client.dashboard?.enabled ?? false;
   const driver = client.driver as SimpleDriver;
@@ -32,7 +34,8 @@ export default (client: CustomClient) => {
   });
 
   client.on('messageCreate', (message: Message) => {
-    // if (message.member?.id === message.guild?.ownerId || message.member?.permissions.has('ADMINISTRATOR')) return;
+    if (message.member?.id === message.guild?.ownerId || message.member?.permissions.has('ADMINISTRATOR')) return;
+    if (message.guild?.invites.resolve(message.content)) return;
 
     if (
       !client.anti_server_advertising &&

@@ -4,5 +4,5 @@ export default interface Event {
   name: string;
   once?: boolean;
 
-  execute(interaction: any, client: SimpleClient): void;
+  execute(client: SimpleClient, ...args: any): void;
 }

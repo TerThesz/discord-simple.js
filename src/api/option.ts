@@ -1,5 +1,4 @@
 import { SimpleDriver } from 'classes';
-import { BitField, Permissions } from 'discord.js';
 import { ServerResponse } from 'http';
 import { SimpleRequest } from 'interfaces';
 import fetch from 'node-fetch';
@@ -54,7 +53,7 @@ export default async function option(req: SimpleRequest, res: ServerResponse) {
 
     if (!guild) return error(404, 'Guild not found');
 
-    if (!guild.owner && !((guild.permissions & (1n << 3n)) == 1n << 3n)) return error(401, 'Unauthorized');
+    if (!guild.owner && !((BigInt(guild.permissions) & (1n << 3n)) == 1n << 3n)) return error(401, 'Unauthorized');
 
     return true;
   }

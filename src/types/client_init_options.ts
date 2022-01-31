@@ -54,6 +54,9 @@ type Dashboard = {
   custom_driver_path?: string;
   storage_path_for_json_driver?: string;
 
+  use_cache?: boolean;
+  cache_timeout?: number;
+
   enable_rest_api?: boolean;
   rest_api_port?: number;
 };
