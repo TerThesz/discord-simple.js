@@ -23,7 +23,7 @@ export default async (client: CustomClient, guild_id?: string) => {
   if (!command_files.length) return console.log('\n🙁 No commands found.');
 
   command_files.forEach((command_file) => {
-    let command = require(resolve(client.commands_folder + '/' + command_file.split('/')[command_file.split('/').length - 1]));
+    let command = require(resolve(client.commands_folder + '/' + command_file.replace(client.commands_folder, '')));
     if (command.default) command = command.default;
     command = new command();
 

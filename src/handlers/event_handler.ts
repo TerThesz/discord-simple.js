@@ -14,9 +14,7 @@ export default async (client: any, load_default_events: boolean = false) => {
     const event_files = (await scan_files(resolve(client.events_folder + '/**/*'))).filter((file) => file.endsWith('.event.ts'));
 
     event_files.forEach(async (event_file) => {
-      const event = await new (require(resolve(
-        client.events_folder + '/' + event_file.split('/')[event_file.split('/').length - 1]
-      )).default)(client);
+      const event = await new (require(resolve(client.events_folder + '/' + event_file.replace(client.events_folder, ''))).default)(client);
 
       if (load_event(event)) number_of_events++;
     });
