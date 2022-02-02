@@ -3,7 +3,6 @@ import { SimpleEvent } from 'index';
 import { resolve } from 'path';
 import { scan_files } from '../utils';
 import default_events from '../events';
-import interaction_handler from './interaction_handler';
 
 export default async (client: any, load_default_events: boolean = false) => {
   let number_of_events = 0;
@@ -35,21 +34,6 @@ export default async (client: any, load_default_events: boolean = false) => {
       return false;
     }
   }
-
-  client.on('interactionCreate', (interaction: any) => {
-    if (client._load_commands) interaction_handler(interaction, client);
-  });
-
-  client.once('error', (error: any) => console.error(`😥 client's WebSocket encountered a connection error: ${error}`));
-
-  client.once('disconnect', () => console.log(`⛔️ the WebSocket has closed and will no longer attempt to reconnect`));
-
-  client.on('guildCreate', (guild: Guild) => {
-    if (client.dashboard?.enabled ?? false) client.driver.create_guild_entry(guild.id);
-  });
-  client.on('guildDelete', (guild: Guild) => {
-    if (client.dashboard?.enabled ?? false) client.driver.delete_guild_entry(guild.id);
-  });
 
   if (!load_default_events) await console.log(`\n✔️ Successfully registered ${number_of_events} application event/-s.`);
 };

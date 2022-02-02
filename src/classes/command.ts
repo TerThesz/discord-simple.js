@@ -1,4 +1,5 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
+import { PermissionResolvable, PermissionString } from 'discord.js';
 import { SimpleClient } from 'index';
 import { SimpleInteraction } from 'interfaces';
 
@@ -17,7 +18,7 @@ export default abstract class Command {
 
   owner_only?: boolean;
 
-  permissions?: Permissions;
+  permissions?: Array<string>;
   use_without_permission?: boolean;
 
   abstract execute(interaction: SimpleInteraction, client: SimpleClient): Promise<any>;
@@ -47,10 +48,4 @@ type Subcommands = Array<{
   description: string;
 
   options?: Options;
-}>;
-
-type Permissions = Array<{
-  id: string;
-  type: string;
-  permission: boolean;
 }>;

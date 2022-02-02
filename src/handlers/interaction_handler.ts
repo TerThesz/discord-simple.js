@@ -8,6 +8,13 @@ export default async (interaction: Interaction<CacheType>, client: CustomClient)
   const command = await client.commands.get(interaction.commandName.toLowerCase());
   if (!command) return;
 
+  const simple_interaction = interaction as SimpleInteraction;
+  simple_interaction.sender = interaction.user;
+  simple_interaction.target = interaction.user;
+
+  simple_interaction.sender_member = interaction.guild?.members.cache.get(simple_interaction.sender.id);
+  simple_interaction.target_member = interaction.guild?.members.cache.get(simple_interaction.target.id);
+
   if (command.owner_only && interaction.user.id !== interaction.guild?.ownerId) {
     interaction.reply({
       content: '🚫 This command is only for the server owner.',
@@ -17,23 +24,14 @@ export default async (interaction: Interaction<CacheType>, client: CustomClient)
     return;
   }
 
-  if (command.permissions && interaction.user.id !== interaction.guild?.ownerId) {
-    if (!client.application?.owner) await client.application?.fetch();
+  if (command.permissions) {
+    const can_continue = client.check_perms(simple_interaction.sender_member, command.permissions);
 
-    const permission = await command.permissions.find((p) => {
-      if (p.type === 'user') return p.id === interaction.user.id;
-
-      return (interaction.member as GuildMember)?.roles.cache.has(p.id);
-    });
-
-    if ((!command.use_without_permission && (!permission || !permission.permission)) || (permission && !permission.permission)) {
-      interaction.reply({
-        content: '🚫 You do not have permission to use this command.',
+    if (!can_continue)
+      return interaction.reply({
+        content: '🚫 You do not have the required permissions to use this command.',
         ephemeral: true,
       });
-
-      return;
-    }
   }
 
   if ((command.global_cooldown || command.cooldown) && interaction.user.id !== interaction.guild?.ownerId) {
@@ -71,13 +69,6 @@ export default async (interaction: Interaction<CacheType>, client: CustomClient)
       );
     }, cooldown * 1000);
   }
-
-  const simple_interaction = interaction as SimpleInteraction;
-  simple_interaction.sender = interaction.user;
-  simple_interaction.target = interaction.user;
-
-  simple_interaction.sender_member = interaction.guild?.members.cache.get(simple_interaction.sender.id);
-  simple_interaction.target_member = interaction.guild?.members.cache.get(simple_interaction.target.id);
 
   try {
     await command.execute(simple_interaction, client);

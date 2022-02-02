@@ -1,13 +1,14 @@
-import { CommandInteraction, GuildMember } from 'discord.js';
+import { Intents } from 'discord.js';
 import { SimpleClient, SimpleCommand } from '../../src';
+import { SimpleInteraction } from '../../src/interfaces';
 
 export default class PrdCommand extends SimpleCommand {
   name = 'jan1o';
   description = 'Prints the current date and time. (not really)';
 
-  async execute(interaction: CommandInteraction, client: SimpleClient) {
-    await interaction.reply('cauko');
+  permissions = ['ADMINISTRATOR'];
 
-    client.user?.setActivity('cauko', { type: 'WATCHING' });
+  async execute(interaction: SimpleInteraction, client: SimpleClient): Promise<void> {
+    interaction.reply('Hello World');
   }
 }

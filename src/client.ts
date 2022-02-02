@@ -1,4 +1,4 @@
-import { Client, Collection, Intents } from 'discord.js';
+import { Client, Collection, GuildMember, Intents, PermissionResolvable, Role } from 'discord.js';
 import { ClientInitOptions } from 'types';
 import fs from 'fs';
 import { resolve } from 'path';
@@ -236,5 +236,33 @@ export default class CustomClient extends Client {
     await cb();
 
     return output;
+  };
+
+  /**
+   * A function that checks if a member has required permissions.
+   *
+   * @param member {GuildMember | undefined} - The member to check
+   * @param perms {PermissionResolvable[] | PermissionResolvable} - The permission/-s to check
+   * @returns {boolean} - If the member has at least one of the required permissions
+   */
+  public check_perms = (member: GuildMember | undefined, perms: Array<string> | string): boolean => {
+    function check_perm(perm: string): boolean {
+      return member?.permissions.has(perm as PermissionResolvable) ?? false;
+    }
+
+    if (Array.isArray(perms)) return perms.some((perm) => check_perm(perm));
+
+    return check_perm(perms);
+  };
+
+  /**
+   * A function that checks if a role is higher than another role.
+   *
+   * @param role1 {Role} - The first role
+   * @param role2 {Role} - The second role
+   * @returns {boolean} - If the first role is higher than the second role
+   */
+  public compare_role_positions = (role1: Role, role2: Role): boolean => {
+    return role1.position > role2.position;
   };
 }

@@ -33,6 +33,8 @@ type ClientInitOptions = {
   dashboard?: Dashboard;
 
   presence?: Presence;
+
+  [key: string]: any;
 };
 
 export default ClientInitOptions;
