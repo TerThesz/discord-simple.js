@@ -45,8 +45,12 @@ export default async (client: any) => {
 
   client.once('disconnect', () => console.log(`⛔️ the WebSocket has closed and will no longer attempt to reconnect`));
 
-  client.on('guildCreate', (guild: Guild) => client.driver.create_guild_entry(guild.id));
-  client.on('guildDelete', (guild: Guild) => client.driver.delete_guild_entry(guild.id));
+  client.on('guildCreate', (guild: Guild) => {
+    if (client.dashboard?.enabled ?? false) client.driver.create_guild_entry(guild.id);
+  });
+  client.on('guildDelete', (guild: Guild) => {
+    if (client.dashboard?.enabled ?? false) client.driver.delete_guild_entry(guild.id);
+  });
 
   if (client._load_events) await console.log(`\n✔️ Successfully registered ${number_of_events} application event/-s.`);
 };
