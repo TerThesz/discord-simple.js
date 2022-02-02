@@ -167,7 +167,7 @@ export default class CustomClient extends Client {
 
     this.client_presence = options?.presence;
 
-    event_handler(this);
+    event_handler(this, true);
   }
 
   /**
@@ -194,6 +194,7 @@ export default class CustomClient extends Client {
     if (!fs.existsSync(this.events_folder)) return this._folder_error(this.events_folder);
 
     this._load_events = true;
+    event_handler(this);
 
     return this;
   };

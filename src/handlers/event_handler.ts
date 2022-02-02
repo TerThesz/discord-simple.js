@@ -5,22 +5,22 @@ import { scan_files } from '../utils';
 import default_events from '../events';
 import interaction_handler from './interaction_handler';
 
-export default async (client: any) => {
+export default async (client: any, load_default_events: boolean = false) => {
   let number_of_events = 0;
 
-  if (client._load_events) {
+  if (!load_default_events) {
     await console.log('\n🤔 Loading events...');
 
-    const event_files = (await scan_files(resolve(client.events_folder + '/**/'))).filter((file) => file.endsWith('.event.ts'));
+    const event_files = (await scan_files(resolve(client.events_folder + '/**/*'))).filter((file) => file.endsWith('.event.ts'));
 
     event_files.forEach(async (event_file) => {
-      const event = await new (require(client.events_folder + '/' + event_file).default)(client);
+      const event = await new (require(resolve(
+        client.events_folder + '/' + event_file.split('/')[event_file.split('/').length - 1]
+      )).default)(client);
 
       if (load_event(event)) number_of_events++;
     });
-  }
-
-  default_events.forEach(async (event) => load_event(new event()));
+  } else default_events.forEach(async (event) => load_event(new event()));
 
   function load_event(event: SimpleEvent): boolean {
     try {
@@ -53,5 +53,5 @@ export default async (client: any) => {
     if (client.dashboard?.enabled ?? false) client.driver.delete_guild_entry(guild.id);
   });
 
-  if (client._load_events) await console.log(`\n✔️ Successfully registered ${number_of_events} application event/-s.`);
+  if (!load_default_events) await console.log(`\n✔️ Successfully registered ${number_of_events} application event/-s.`);
 };

@@ -16,14 +16,14 @@ export default async (client: CustomClient, guild_id?: string) => {
 
   console.log('\n🤔 Loading commands...');
 
-  const command_files = (await scan_files(resolve(client.events_folder + '/**/'))).filter(
+  const command_files = (await scan_files(resolve(client.commands_folder + '/**/*'))).filter(
     (file) => file.endsWith('command.ts') || file.endsWith('.ts')
   );
 
   if (!command_files.length) return console.log('\n🙁 No commands found.');
 
   command_files.forEach((command_file) => {
-    let command = require(`${client.commands_folder}/${command_file}`);
+    let command = require(resolve(client.commands_folder + '/' + command_file.split('/')[command_file.split('/').length - 1]));
     if (command.default) command = command.default;
     command = new command();
 
