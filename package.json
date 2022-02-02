@@ -44,10 +44,11 @@
   "dependencies": {
     "@discordjs/builders": "^0.11.0",
     "@discordjs/rest": "^0.2.0-canary.0",
+    "@types/glob": "^7.2.0",
     "discord-api-types": "^0.26.1",
-    "discord-simple.js": "^1.12.5",
     "discord.js": "^13.6.0",
     "fs": "^0.0.1-security",
+    "glob": "^7.2.0",
     "path": "^0.12.7"
   },
   "packageManager": "yarn@3.1.1"
