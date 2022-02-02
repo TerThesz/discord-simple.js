@@ -1,5 +1,4 @@
 import command_handler from '../handlers/command_handler';
-import event_handler from '../handlers/event_handler';
 import { SimpleEvent } from 'interfaces';
 import { SimpleClient } from 'index';
 
