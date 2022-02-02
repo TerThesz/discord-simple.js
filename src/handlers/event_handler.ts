@@ -1,6 +1,7 @@
 import { Guild } from 'discord.js';
 import fs from 'fs';
 import { SimpleEvent } from 'index';
+import { resolve } from 'path';
 import default_events from '../events';
 import interaction_handler from './interaction_handler';
 
@@ -10,7 +11,7 @@ export default async (client: any) => {
   if (client._load_events) {
     await console.log('\n🤔 Loading events...');
 
-    const event_files = await fs.readdirSync(client.events_folder).filter((file) => file.endsWith('.event.ts'));
+    const event_files = await fs.readdirSync(resolve(client.events_folder + '/**/')).filter((file) => file.endsWith('.event.ts'));
 
     event_files.forEach(async (event_file) => {
       const event = await new (require(client.events_folder + '/' + event_file).default)(client);

@@ -822,7 +822,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"discord-simple.js@workspace:.":
+"discord-simple.js@^1.12.5, discord-simple.js@workspace:.":
   version: 0.0.0-use.local
   resolution: "discord-simple.js@workspace:."
   dependencies:
@@ -831,6 +831,7 @@ __metadata:
     "@types/node": ^17.0.9
     corde: ^4.4.5
     discord-api-types: ^0.26.1
+    discord-simple.js: ^1.12.5
     discord.js: ^13.6.0
     dotenv: ^14.2.0
     fs: ^0.0.1-security

@@ -4,6 +4,7 @@ import { Collection } from 'discord.js';
 import fs from 'fs';
 import CustomClient from 'client';
 import { SimpleCommand } from 'classes';
+import { resolve } from 'path';
 
 export default (client: CustomClient, guild_id?: string) => {
   client.commands = new Collection<string, SimpleCommand>();
@@ -15,7 +16,9 @@ export default (client: CustomClient, guild_id?: string) => {
 
   console.log('\n🤔 Loading commands...');
 
-  const command_files = fs.readdirSync(client.commands_folder).filter((file) => file.endsWith('command.ts') || file.endsWith('.ts'));
+  const command_files = fs
+    .readdirSync(resolve(client.commands_folder + '/**/'))
+    .filter((file) => file.endsWith('command.ts') || file.endsWith('.ts'));
 
   if (!command_files.length) return console.log('\n🙁 No commands found.');
 
