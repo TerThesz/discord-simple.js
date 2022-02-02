@@ -230,7 +230,7 @@ export default class CustomClient extends Client {
       token = undefined;
     }
 
-    const output = await super.login(token || this.token);
+    const output = await super.login(token);
 
     await cb();
 

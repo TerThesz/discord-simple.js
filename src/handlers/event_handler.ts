@@ -5,11 +5,11 @@ import default_events from '../events';
 import interaction_handler from './interaction_handler';
 
 export default async (client: any) => {
-  await console.log('\n🤔 Loading events...');
-
   let number_of_events = 0;
 
   if (client._load_events) {
+    await console.log('\n🤔 Loading events...');
+
     const event_files = await fs.readdirSync(client.events_folder).filter((file) => file.endsWith('.event.ts'));
 
     event_files.forEach(async (event_file) => {
