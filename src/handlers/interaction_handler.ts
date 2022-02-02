@@ -1,21 +1,14 @@
 import { CacheType, GuildMember, Interaction } from 'discord.js';
 import CustomClient from 'client';
+import { SimpleInteraction } from 'interfaces';
 
-export default async (
-  interaction: Interaction<CacheType>,
-  client: CustomClient
-) => {
+export default async (interaction: Interaction<CacheType>, client: CustomClient) => {
   if (!interaction.isCommand()) return;
 
-  const command = await client.commands.get(
-    interaction.commandName.toLowerCase()
-  );
+  const command = await client.commands.get(interaction.commandName.toLowerCase());
   if (!command) return;
 
-  if (
-    command.owner_only &&
-    interaction.user.id !== interaction.guild?.ownerId
-  ) {
+  if (command.owner_only && interaction.user.id !== interaction.guild?.ownerId) {
     interaction.reply({
       content: '🚫 This command is only for the server owner.',
       ephemeral: true,
@@ -24,10 +17,7 @@ export default async (
     return;
   }
 
-  if (
-    command.permissions &&
-    interaction.user.id !== interaction.guild?.ownerId
-  ) {
+  if (command.permissions && interaction.user.id !== interaction.guild?.ownerId) {
     if (!client.application?.owner) await client.application?.fetch();
 
     const permission = await command.permissions.find((p) => {
@@ -36,11 +26,7 @@ export default async (
       return (interaction.member as GuildMember)?.roles.cache.has(p.id);
     });
 
-    if (
-      (!command.use_without_permission &&
-        (!permission || !permission.permission)) ||
-      (permission && !permission.permission)
-    ) {
+    if ((!command.use_without_permission && (!permission || !permission.permission)) || (permission && !permission.permission)) {
       interaction.reply({
         content: '🚫 You do not have permission to use this command.',
         ephemeral: true,
@@ -50,17 +36,10 @@ export default async (
     }
   }
 
-  if (
-    (command.global_cooldown || command.cooldown) &&
-    interaction.user.id !== interaction.guild?.ownerId
-  ) {
-    const cooldown = (await (command.global_cooldown ||
-      command.cooldown)) as number;
+  if ((command.global_cooldown || command.cooldown) && interaction.user.id !== interaction.guild?.ownerId) {
+    const cooldown = (await (command.global_cooldown || command.cooldown)) as number;
 
-    const timestamp = await client.timestamps.find(
-      (cooldown) =>
-        cooldown.user_id === '*' || cooldown.user_id === interaction.user.id
-    );
+    const timestamp = await client.timestamps.find((cooldown) => cooldown.user_id === '*' || cooldown.user_id === interaction.user.id);
 
     if (timestamp) {
       await interaction.reply(
@@ -87,16 +66,21 @@ export default async (
 
     await setTimeout(() => {
       client.timestamps.splice(
-        client.timestamps.findIndex(
-          (cooldown) => cooldown.user_id === interaction.user.id
-        ),
+        client.timestamps.findIndex((cooldown) => cooldown.user_id === interaction.user.id),
         1
       );
     }, cooldown * 1000);
   }
 
+  const simple_interaction = interaction as SimpleInteraction;
+  simple_interaction.sender = interaction.user;
+  simple_interaction.target = interaction.user;
+
+  simple_interaction.sender_member = interaction.guild?.members.cache.get(simple_interaction.sender.id);
+  simple_interaction.target_member = interaction.guild?.members.cache.get(simple_interaction.target.id);
+
   try {
-    await command.execute(interaction, client);
+    await command.execute(simple_interaction, client);
   } catch (error) {
     console.error(error);
     interaction.reply({

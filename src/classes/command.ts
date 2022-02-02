@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
-import { CommandInteraction } from 'discord.js';
 import { SimpleClient } from 'index';
+import { SimpleInteraction } from 'interfaces';
 
 export default abstract class Command {
   constructor() {
@@ -20,10 +20,7 @@ export default abstract class Command {
   permissions?: Permissions;
   use_without_permission?: boolean;
 
-  abstract execute(
-    interaction: CommandInteraction,
-    client: SimpleClient
-  ): Promise<any>;
+  abstract execute(interaction: SimpleInteraction, client: SimpleClient): Promise<any>;
 
   options?: Options;
 
