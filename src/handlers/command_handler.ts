@@ -1,10 +1,10 @@
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v9';
 import { Collection } from 'discord.js';
-import CustomClient from 'client';
-import { SimpleCommand } from 'classes';
+import CustomClient from '../client';
+import { SimpleCommand } from '../classes';
 import { resolve } from 'path';
-import { scan_files } from 'utils';
+import { scan_files } from '../utils';
 
 export default async (client: CustomClient, guild_id?: string) => {
   client.commands = new Collection<string, SimpleCommand>();

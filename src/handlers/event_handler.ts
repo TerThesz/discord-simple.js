@@ -1,7 +1,7 @@
 import { Guild } from 'discord.js';
 import { SimpleEvent } from 'index';
 import { resolve } from 'path';
-import { scan_files } from 'utils';
+import { scan_files } from '../utils';
 import default_events from '../events';
 import interaction_handler from './interaction_handler';
 
